@@ -1,0 +1,217 @@
+
+package ch.arc.cours.e_consolidation;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.junit.Assert;
+
+import ch.arc.cours.c_stream.c_referencemethode.tools.CheckTools;
+import ch.arc.cours.z_annexe.tools.Int;
+
+public class UseContainerConvertion
+	{
+
+	/*------------------------------------------------------------------*\
+	|*							Methodes Public							*|
+	\*------------------------------------------------------------------*/
+
+	public static void main(String[] args)
+		{
+		main();
+		}
+
+	public static void main()
+		{
+		System.out.println("consolidation");
+
+		// convertion, revision Int
+			{
+			arraytoList_Int();
+			listToArray_Int();
+			}
+
+		// convertion, revision int
+			{
+			listToArray_int();
+			}
+		}
+
+	/*------------------------------------------------------------------*\
+	|*							Methodes Private						*|
+	\*------------------------------------------------------------------*/
+
+	/*------------------------------*\
+	|*		convertion Int			*|
+	\*------------------------------*/
+
+	/**
+	 * <pre>
+	 * transformation d'un tableau en list, facile!
+	 *
+	 * Warning : deux versions:
+	 *
+	 * 			(V1)	Copie superficielle (objet partager)
+	 * 			(V2)	Copie profonde (clone de tout)
+	 * </pre>
+	 */
+	private static void arraytoList_Int()
+		{
+		System.out.println("\n[arraytoList] :\n");
+
+		Int[] tab = { new Int(1), new Int(2), new Int(3) };
+
+		System.out.println("array " + Arrays.toString(tab));
+
+		// sans stream : Copie superficielle (voir comme une liste)
+			{
+			// Arrays. ...
+			List<Int> list =null;//TODO
+
+			System.out.println("list  " + list);
+			Assert.assertTrue(CheckTools.isSuperficialCopy(list, tab));
+			}
+
+		// avec stream
+			{
+			// Copie superficielle
+				{
+				List<Int> list = null;// TODO
+
+				// check
+					{
+					Assert.assertTrue(CheckTools.isSuperficialCopy(list, tab));
+
+					tab[0].setValue(100); // modifier l'originale, modifie la copie
+					System.out.println("\nCopie superficielle :");
+					System.out.println("list  " + list);
+					System.out.println("tab   " + Arrays.toString(tab));
+					}
+				}
+
+			// Copie profonde
+				{
+				List<Int> list = null;// TODO
+
+				// check
+					{
+					Assert.assertTrue(CheckTools.isDeapCopy(list, tab));
+
+					tab[0].setValue(1000);// modifier la copie ne modifie pas l'originale
+					System.out.println("\nCopie profonde :");
+					System.out.println("list  " + list);
+					System.out.println("tab   " + Arrays.toString(tab));
+					}
+				}
+			}
+		}
+
+	/**
+	 * <pre>
+	 * transformation d'une liste en tableau, plus difficile!
+	 *
+	 * Warning : deux versions:
+	 *
+	 * 			(V1)	Copie superficielle (objet partager)
+	 * 			(V2)	Copie profonde (clone de tout)
+	 * </pre>
+	 */
+	private static void listToArray_Int()
+		{
+		System.out.println("\n[listToArray] :\n");
+
+		List<Int> list = Arrays.asList(new Int(1), new Int(2), new Int(3));
+
+		// sans stream
+			{
+			// v1 : Copie superficielle
+				{
+				// toArray et donne un exemple de tableau en input de taille zero!
+				Int[] tab = null;//TODO
+
+				// check
+					{
+					Assert.assertTrue(CheckTools.isSuperficialCopy(list, tab));
+
+					tab[0].setValue(100);// modifier la copie modifie l'originale
+					System.out.println("\nCopie superficielle :");
+					System.out.println("tab   " + Arrays.toString(tab));
+					System.out.println("list  " + list);
+					}
+				}
+
+			// v2 : Copie superficielle, sur place
+				{
+				Int[] tab = new Int[list.size()];// tableau de destination
+				// list.toArray et donne le tableu de destination en input
+				//TODO
+
+				// check
+					{
+					Assert.assertTrue(CheckTools.isSuperficialCopy(list, tab));
+
+					tab[0].setValue(1000); // modifier la copie modifie l'originale
+					System.out.println("\nCopie superficielle :");
+					System.out.println("tab   " + Arrays.toString(tab));
+					System.out.println("list  " + list);
+					}
+				}
+			}
+
+		// avec stream
+			{
+			// V1 : copie superficielle
+				{
+				// reference de methode
+					{
+					Int[] tab = null;//TODO
+
+					// check
+						{
+						Assert.assertTrue(CheckTools.isSuperficialCopy(list, tab));
+
+						tab[1].setValue(3000); // modifier la copie modifie l'originale
+						System.out.println("\nCopie superficielle :");
+						System.out.println("tab   " + Arrays.toString(tab));
+						System.out.println("list  " + list);
+						}
+					}
+				}
+
+			// V2 : copie profonde
+				{
+				// reference methode
+					{
+					Int[] tab = null;// TODO
+
+					// check
+						{
+						Assert.assertTrue(CheckTools.isDeapCopy(list, tab));
+
+						tab[2].setValue(3000);// modifier la copie ne modifie pas l'originale
+						System.out.println("\nCopie profonde :");
+						System.out.println("tab   " + Arrays.toString(tab));
+						System.out.println("list  " + list);
+						}
+					}
+				}
+			}
+		}
+
+	/*------------------------------*\
+	|*		convertion int			*|
+	\*------------------------------*/
+
+	/**
+	 * Idem ci-dessus, mais ici le type final est int
+	 */
+	private static void listToArray_int()
+		{
+		List<Integer> list = List.of(1, 2, 3, 4, 5);
+
+		int[] tab = null;// TODO
+
+		System.out.println(Arrays.toString(tab));
+		}
+
+	}

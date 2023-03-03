@@ -1,0 +1,44 @@
+	//////////////////////////////////
+	// Collector Debriefing:
+	//////////////////////////////////
+	//
+	//	Avec collect(Collectors.XXX()) on sait faire:
+	//
+	//		Des Collections:
+	//
+	//			- toList()
+	//			- toSet()
+	//          - toCollection(supplier)
+	//			- toMap(keyMapper,valueMapper)
+	//
+	//		De la reduction generale:
+	//
+	//			- reducing(init, mapper, binaryOperator)
+	//			- reducing(init, binaryOperator)
+	//			- reducing(binaryOperator) 				(sans valeur d'init, car reduction non numerique, pas de mecanisme sum+=)
+	//
+	//		De la reduction pour String
+	//
+	//			- joigning(delimiter)
+	//			- joigning(delimiter,prefixe,suffixe)
+	//
+	//		De la reduction avec int
+	//
+	// 			- summingInt(mapper)
+	//
+	//		et aussi
+	//
+	//			- counting()
+	//			- maxBy(Comparator)
+	//
+	//		Observation:
+	//
+	//			(O1) Toutes les methodes ci-dessus renvoie des Collector
+	//
+	//			(O2) collect a besoin d'un collector en input
+	//
+	//					collect(collector)
+	//
+	//////////////////////////////////
+	// fin
+	//////////////////////////////////

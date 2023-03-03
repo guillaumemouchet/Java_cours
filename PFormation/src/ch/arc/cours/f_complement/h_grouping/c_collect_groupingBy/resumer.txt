@@ -1,0 +1,43 @@
+				// Rappel (piqure de rappel)
+				//
+				//		(O1) 	Le functionClassifier regroupe selon un critere (chaque output different du functionClassifier forme un cluster)
+				//
+				//		(O2)	Le valueCollector doit dire que faire avec les elements d'un meme cluster
+				//
+				//						(a) Les regrouper dans une Collection?
+				//
+				//								- dans une liste (default)		Collectors.toList();
+				//								- dans un  Set					Collectors.toSet();
+				//								- dans une Collection			Collectors.toCollection(supplier);
+				//
+				//								- dans une map 					Collectors.toMap(keyMapper, valueMapper);
+				//								
+				//								- dans une map 					Collectors.groupingBy(functionClassifier, valueCollector);
+				//								- dans une map 					Collectors.groupingBy(functionClassifier, supplier,valueCollector);
+				//								- dans une map					Collectors.groupingBy(functionClassifier) // valueCollector est par defaut une liste
+				//								- dans une map 					Collectors.partitioningBy(predicateClassifier, valueCollector) // deux clusters
+				//
+				//						(b) Les reduire?
+				//
+				//								- sans mapping 					Collectors.reducing(BinaryOperator)
+				//								- sans mapping 					Collectors.reducing(init, BinaryOperator)
+				//								- avec mapping					Collectors.reducing(init, mapper, BinaryOperator)
+				//
+				//							pour des int:
+				//
+				//								- avec mapping et int			Collectors.summingInt(mapper)
+				//
+				//							pour des String
+				//
+				//								- Collectors.joining(delimiter,prefixe,suffixe)
+				//
+				//						(c) autres?
+				//
+				//								- les compter					Collectors.counting();
+				//								- argmax						Collectors.maxBy(Comparator)
+				//								- ...
+				//
+				//		(O3)	On retrouve la meme "liste" des Collectors etudier dans UseCollectors (paragraphe debrifieng) !! Aller le voir!
+				//
+				//		(O4)	Collectors.groupingBy(functionClassifier,valueCollector) emploie des collector dans valueCollector
+

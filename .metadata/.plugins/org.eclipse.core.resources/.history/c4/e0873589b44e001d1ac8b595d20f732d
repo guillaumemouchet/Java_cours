@@ -1,0 +1,372 @@
+
+package ch.arc.cours.c_stream.a_stream_objet;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.IntSummaryStatistics;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
+import org.junit.jupiter.api.Assertions;
+
+import ch.arc.cours.z_annexe.material.Homme;
+import ch.arc.cours.z_annexe.material.Personne;
+import ch.arc.cours.z_annexe.material.PersonneTools;
+import ch.arc.cours.z_annexe.material.Team;
+import ch.arc.cours.z_annexe.material.TeamTools;
+
+public class UseStream_02_Collect
+	{
+	/*------------------------------------------------------------------*\
+	|*							Methodes Public							*|
+	\*------------------------------------------------------------------*/
+
+	public static void main(String[] args)
+		{
+		main();
+		}
+
+	public static void main()
+		{
+		int n = 5;
+
+		System.out.println("stream : collect");
+
+		// to Collection
+			{
+			useCollectToList1(n);
+			useCollectToList2(n);
+			useCollectToSet(n);
+			}
+
+		// to CollectionCustom
+			{
+			useCollectCustom1();
+			useCollectCustom2();
+			useCollectCustom3();
+			}
+
+		// reduce & stat
+			{
+			useCollectToReduce(n);
+			useCollectToStat(n);
+			}
+
+		// toMap et Grouping
+			{
+			// difficult see later
+			}
+
+		useSort();
+		}
+
+	/*------------------------------------------------------------------*\
+	|*							Methodes Private						*|
+	\*------------------------------------------------------------------*/
+
+	/*------------------------------*\
+	|*		toCollection			*|
+	\*------------------------------*/
+
+	/**
+	 * Probleme :	list personne dont age > 50
+	 *
+	 * Comment  :   ...collect(Collectors.XXX());
+	 */
+	private static void useCollectToList1(int n)
+		{
+		List<Personne> list = PersonneTools.create(n);
+
+		System.out.println("originale : " + list);
+
+		Predicate<Personne> ageBigger50 = p -> p.getAge()>50;//
+
+		List<Personne> listFilter = list.stream().filter(ageBigger50).collect(Collectors.toList());//
+		// filter  : non terminal , stream-in -> stream-out
+		// collect : terminal , interdit use stream after
+
+		System.out.println("age > 50 : " + listFilter);
+		}
+
+	/**
+	 * Probleme :	list hauteur personne dont age > 50
+	 *
+	 * Comment  :   ...collect(Collectors.XXX());
+	 */
+	private static void useCollectToList2(int n)
+		{
+		List<Personne> list = PersonneTools.create(n);
+
+		// lambda, reference methode si possible
+			{
+			Predicate<Personne> ageBigger50 = p -> p.getAge()>50;//
+
+			List<Integer> listHauteur = list.stream() //
+					.filter(ageBigger50)//
+					.map(Personne::getHauteur)//
+					.collect(Collectors.toList());// Le collect ne marche qu'avec les streams d'objects
+			// filter  : non terminal , stream-in -> stream-out
+			// map     : non terminal , stream-in -> stream-out
+			// collect : terminal , interdit use stream after
+
+			System.out.println("hauteur avec age > 50 : " + listHauteur);
+			}
+		}
+
+	/**
+	 * Probleme :	set hauteur personne dont age > 50
+	 *
+	 * Comment  :   ...collect(Collectors.XXX());
+	 */
+	private static void useCollectToSet(int n)
+		{
+		List<Personne> list = PersonneTools.create(n);
+
+		// lambda, reference methode si possible
+			{
+			// TODO
+			Predicate<Personne> ageBigger50 = p -> p.getAge()>50;
+			Set<Integer> setHauteur = list//
+					.stream()//
+					.filter(ageBigger50)//
+					.map(Personne::getHauteur)//
+					.collect(Collectors.toSet());
+
+			// filter  : non terminal , stream-in -> stream-out
+			// map     : non terminal , stream-in -> stream-out
+			// collect : terminal , interdit use stream after
+
+			System.out.println("hauteur avec age > 50 : " + setHauteur);
+			}
+		}
+
+	/*------------------------------*\
+	|*	ToCollection / Custom		*|
+	\*------------------------------*/
+
+	/**
+	 * Comment  :   ...collect(Collectors.toCollection(Supplier<T>);
+	 */
+	private static void useCollectCustom1()
+		{
+		Integer[] tab = { 10, 20, 30, 40, 50 };
+
+		// ArrayList classe interne anonyme
+			{
+			Supplier<ArrayList<Integer>> supplierArrayList = new Supplier<ArrayList<Integer>>()
+				{
+
+				@Override
+				public ArrayList<Integer> get()
+					{
+					return new ArrayList<Integer>();
+					}
+				};//TODO
+
+			ArrayList<Integer> list = Arrays.stream(tab).collect(Collectors.toCollection(supplierArrayList));//TODO
+
+			System.out.println(list);
+			}
+
+		// ArrayList lamda
+			{
+			Supplier<ArrayList<Integer>> collectionFactory = null;//TODO
+
+			ArrayList<Integer> list = null;//TODO
+
+			System.out.println(list);
+			}
+
+		// ArrayList reference methode
+			{
+			Supplier<ArrayList<Integer>> collectionFactory = null;//TODO
+
+			ArrayList<Integer> list = null;//TODO
+
+			System.out.println(list);
+			}
+
+		// ArrayList reference methode, sans variable
+			{
+			ArrayList<Integer> list = null;//TODO
+
+			System.out.println(list);
+			}
+		}
+
+	/**
+	 * Comment  :   ...collect(Collectors.toCollection(Supplier<T>);
+	 */
+	private static void useCollectCustom2()
+		{
+		Integer[] tab = { 1, 2, 3, 4, 5, 1, 2, 3, 4, 5 };
+
+		// LinkedList
+			{
+			LinkedList<Integer> list = null;//TODO
+
+			System.out.println(list);
+			}
+
+		// HashSet
+			{
+			HashSet<Integer> set = null;//TODO
+
+			Assertions.assertTrue(set.size() == 5);
+			System.out.println(set);
+			}
+		}
+
+	/**
+	 * But : 		ajouter a team les hommes du tableau
+	 * Contrainte : stream et collect
+	 */
+	private static void useCollectCustom3()
+		{
+		int n = 3;
+		Team team = TeamTools.create(n); // team derive de LinkedList
+
+		int m = 5;
+		Homme[] tabHomme = TeamTools.createTab(m);
+
+		// Ajouter a team les homme du tableau (avec une stream!)
+		// TODO
+
+		Assertions.assertEquals(n + m, team.size());
+		System.out.println(team);
+		}
+
+	/*------------------------------*\
+	|*		sort / ToCollection		*|
+	\*------------------------------*/
+
+	/**
+	 * <pre>
+	 * Probleme :	tri
+	 *
+	 * Rappel : Comparator:
+	 *
+	 * 			x>y  return 1
+	 * 			x==y return 0
+	 * 			x<y	 return -1
+	 * </pre>
+	 */
+	private static void useSort()
+		{
+		Integer[] tab = { 9, 5, 7, 2, 4, 3, 1, 6, 8 };
+
+		// tri croissant, reference methode
+			{
+			List<Integer> listSorted = null;// TODO
+
+			System.out.println("tri croissant : " + listSorted);
+			}
+
+		// tri decroissant  : version 1 : lamda for comparator and multiply by -1
+			{
+			Comparator<Integer> decroissant = null;// TODO
+
+			LinkedList<Integer> listSorted = null;// TODO
+
+			System.out.println("tri decroissant : " + listSorted);
+			}
+
+		// tri decroissant  : version 2 : switch x,y
+			{
+			Comparator<Integer> decroissant = null;// TODO
+
+			ArrayList<Integer> listSorted = null;// TODO
+
+			System.out.println("tri decroissant : " + listSorted);
+			}
+
+		// tri decroissant  : version 3 : default methode reverse of comparator
+			{
+			Comparator<Integer> decroissant = null;// TODO
+
+			List<Integer> listSorted = null;// TODO
+
+			System.out.println("tri decroissant : " + listSorted);
+			}
+		}
+
+	/*------------------------------*\
+	|*		Reduction				*|
+	\*------------------------------*/
+
+	/**
+	 * Probleme   :	somme des hauteurs
+	 * Contrainte : employer collect pour la reduction
+	 */
+	private static void useCollectToReduce(int n)
+		{
+		List<Personne> list = PersonneTools.create(n);
+
+		// lambda, reference methode si possible
+			{
+			// V1 : Collectors.reducing
+				{
+				Integer sumHauteur = null;// TODO
+
+				System.out.println("sumHauteur : " + sumHauteur);
+				}
+
+			// V2 : Collectors.summingInt
+				{
+				// Contrainte : utiliser un map avant le collect !
+				Integer sumHauteur = null;// TODO
+
+				System.out.println("sumHauteur : " + sumHauteur);
+				}
+
+			// V3 : Collectors.summingInt
+				{
+				// Contrainte : ne pas utiliser de map avant le collect
+				Integer sumHauteur = null;// TODO
+
+				System.out.println("sumHauteur : " + sumHauteur);
+				}
+			}
+		}
+
+	/**
+	 * Probleme   :	statistique des ages
+	 * Contrainte : Utiliser un collect
+	 */
+	private static void useCollectToStat(int n)
+		{
+		List<Personne> list = PersonneTools.create(n);
+
+		// lambda, reference methode si possible
+			{
+			// v1
+				{
+				// Contrainte : un map avant le collect
+				IntSummaryStatistics stat = null;//TODO
+
+				System.out.println("stat age : " + stat);
+				}
+
+			//v2
+				{
+				// Contrainte : mapping interdit avant le collect
+				IntSummaryStatistics stat = null;//TODO
+
+				System.out.println("stat age : " + stat);
+				}
+			}
+		}
+
+	/*------------------------------*\
+	|*		to map / grouping		*|
+	\*------------------------------*/
+
+	// Difficult, see later
+
+	}

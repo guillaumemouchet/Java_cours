@@ -1,0 +1,126 @@
+
+package ch.arc.cours.c_stream.a_stream_objet;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.IntFunction;
+
+import ch.arc.cours.z_annexe.material.Personne;
+import ch.arc.cours.z_annexe.material.PersonneTools;
+
+/**
+ * <pre>
+ * Pour collecter dans un Array, on ne passe pas par collect, mais par toArray
+ *
+ * Rappel C++:
+ *
+ * 		Contexte:
+ *
+ * 			Banane tab=new Banane[n];
+ *
+ * 		Observations:
+ *
+ * 			(O1)	n+1 objets instancier, le tableau et n Banane
+ * 			(O2)	Banane doit posseder un constructeur par defaut, sinon compile pas
+ *
+ * Rappe Java:
+ *
+ * 		Contexte:
+ *
+ * 			Banane tab=new Banane[n];
+ *
+ * 		Observations:
+ *
+ * 			(O1)	1 objets instancier, le tableau contient des reference null de Banane
+ *
+ * </pre>
+ */
+public class UseStream_03_Collect_toArray
+	{
+	/*------------------------------------------------------------------*\
+	|*							Methodes Public							*|
+	\*------------------------------------------------------------------*/
+	
+	public static void main(String[] args)
+		{
+		main();
+		}
+		
+	public static void main()
+		{
+		System.out.println("Collect : toArray");
+		
+		toArray();
+		}
+		
+	/*------------------------------------------------------------------*\
+	|*							Methodes Private						*|
+	\*------------------------------------------------------------------*/
+	
+	/**
+	 * Probleme :	list hauteur personne
+	 *
+	 * Comment  :   toArray(IntFunction<Integer[]> tabGenerator)
+	 */
+	private static void toArray()
+		{
+		int n = 5;
+		List<Personne> list = PersonneTools.create(n);
+		
+		// version 1 : lambda
+			{
+			// generator :
+			// 		input  : n la taille du tableau
+			// 		output : un tableau d'integer de taille n
+			//		rappel : le tableau contient des references null
+			
+			IntFunction<Integer[]> tabGenerator = m -> new Integer[m];//
+			Integer[] tab = list//
+					.stream()//
+					.map(Personne::getHauteur)//
+					.toArray(tabGenerator);
+			
+			System.out.println(Arrays.toString(tab));
+			}
+			
+		// version 2 : reference methode
+			{
+			IntFunction<Integer[]> tabGenerator = Integer[]::new;
+			Integer[] tab = list//
+					.stream()//
+					.map(Personne::getHauteur)//
+					.toArray(tabGenerator);
+			
+			System.out.println(Arrays.toString(tab));
+			}
+			
+		// version 3 : reference methode, sans variable
+			{
+			Integer[] tab = list//
+					.stream()//
+					.map(Personne::getHauteur)// Stream<Integer>
+					.toArray(Integer[]::new);
+			
+			System.out.println(Arrays.toString(tab));
+			}
+		// version 4 :
+			{
+			int[] tab = { 1, 2, 3, 4 };
+			
+			int[] tabCopie = Arrays//
+					.stream(tab)// IntStream et non Stream<Integer>
+					.toArray();
+			}
+		// version 5 :
+			{
+			Integer[] tab = list//
+					.stream()//
+					.map(Personne::getHauteur)// Stream<Integer>
+					.toArray(Integer[]::new);
+			
+			System.out.println(Arrays.toString(tab));
+			}
+			
+		}
+		
+	}

@@ -1,0 +1,250 @@
+
+package ch.arc.cours.lamda.image.c_mandelbrot;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.util.stream.IntStream;
+
+import ch.arc.cours.lamda.image.c_mandelbrot.tools.Calibreur;
+import ch.arc.cours.lamda.image.c_mandelbrot.tools.DomaineMandelbrot;
+import ch.arc.cours.lamda.image.c_mandelbrot.tools.Interval;
+import ch.arc.cours.lamda.image.c_mandelbrot.tools.IntervalInt;
+import ch.arc.cours.lamda.image.c_mandelbrot.tools.Variateur;
+import ch.arc.cours.lamda.image.framework.image.BImage;
+import ch.arc.cours.lamda.image.framework.image.Calcul;
+
+public class Mandelbrot extends BImage
+	{
+
+	/*------------------------------------------------------------------*\
+	|*							Constructeurs							*|
+	\*------------------------------------------------------------------*/
+
+	public Mandelbrot(Dimension dim, Calcul fillType, IntervalInt intervalN)
+		{
+		super(dim, "Mandelbrot", fillType);
+
+		// Input
+			{
+			Interval intervalX = new Interval(-2.1, 0.8);
+			Interval intervalY = new Interval(-1.3, 1.3);
+			this.n = intervalN.getB();
+			this.domaineMath = new DomaineMandelbrot(intervalX, intervalY, w, h);
+			}
+
+		// Tools
+			{
+			this.variateurN = new Variateur(intervalN);
+
+			// table des color
+				{
+				//une seule instance
+				// on utilise la taille max de n
+				// n est le parametre d'animation.
+				// n varie dans intervalN
+				// selon la valeur de n dans intervalN, les cases de fin du tableau ne seront pas utile.
+
+				this.tabColor = new int[this.n - 1];
+
+				Interval intervalIndiceArret = new Interval(0.0, this.n-1);
+				Interval intervalHue01 = new Interval(0.0, 1.0);
+
+				this.calibreur = new Calibreur(intervalIndiceArret, intervalHue01);
+
+				}
+			}
+		}
+
+	public Mandelbrot(Calcul fillType, IntervalInt intervalN)
+		{
+		this(Toolkit.getDefaultToolkit().getScreenSize(), fillType, intervalN);
+		}
+
+	public Mandelbrot(int w, int h, IntervalInt intervalN)
+		{
+		this(new Dimension(w, h), Calcul.STREAM_PARALLEL, intervalN);
+		}
+
+	public Mandelbrot(IntervalInt intervalN)
+		{
+		this(Calcul.STREAM_PARALLEL, intervalN);
+		}
+
+	/*------------------------------------------------------------------*\
+	|*							Methodes Public							*|
+	\*------------------------------------------------------------------*/
+
+	@Override
+	public long animationStep(long iteration)
+		{
+		this.n = variateurN.varier();
+
+		updateTableColor();
+
+		return super.animationStep(iteration);
+		}
+
+	/*------------------------------*\
+	|*			  Standard			*|
+	\*------------------------------*/
+
+	@Override
+	protected void fillStandard()
+		{
+		for(int i = 0; i < h; i++)// lignes
+			{
+			colorLineI(i);
+			}
+		}
+
+	/*------------------------------*\
+	|*			  Stream			*|
+	\*------------------------------*/
+
+	@Override
+	protected void fillStreamSequentiel()
+		{
+		IntStream.range(0, this.h).forEach(this::colorLineI);
+		}
+
+	@Override
+	protected void fillStreamParallel()
+		{
+		IntStream.range(0, this.h).parallel().forEach(this::colorLineI);
+		}
+
+	/*------------------------------------------------------------------*\
+	|*							Methodes Private						*|
+	\*------------------------------------------------------------------*/
+
+	/*------------------------------*\
+	|*			  Math				*|
+	\*------------------------------*/
+
+	private int rgb(int i, int j)
+		{
+		// Indications:
+		//		(I1) Converton de (i,j) en (x,y) : use domaineMandelbrot
+		//		(I2) calul de la suite
+		//		(I3) recuperation de l'indice ou le calcul a ete arreter in [1,n]
+		//		(I4) si indiceArret>=n, on colorie en noir
+		//		(I5) sinon, on colorie en HSB avec S=1 B=1. Selon la valeur de indiceArret on en deduit une hue01
+		//				Utiliser la classe Calibreur
+		//				Calibreur calibreur = new Calibreur(intervalIndiceArret, intervalHue01);
+		double x = domaineMath.jToX(j);
+		double y = domaineMath.iToY(i);
+
+		int indice = suite(x, y);
+		if (indice >= n)
+			{
+			//Colorie en noir
+			return BLACK;
+			}
+		else
+			{
+			//HSB
+			return tabColor(indice);
+			}
+
+		}
+
+	/**
+	 * in [1,n]
+	 */
+	private int suite(double x, double y)
+		{
+		double ai = 0;
+		double bi = 0;
+		double aCopy = 0;
+		int indice = 0;
+		do
+			{
+			aCopy = ai;
+			ai = (Math.pow(ai, 2) - Math.pow(bi, 2)) + x;
+			bi = 2 * aCopy * bi + y;
+			indice++;
+			} while(Math.pow(ai, 2) + Math.pow(bi, 2) > 4 || indice >= n);
+
+		return indice;
+		}
+
+	private void colorLineI(int i)
+		{
+		// Indications:
+		//		(I1) Faire varier l'indice de colonne j in [0,w[, en sequentiel
+		//		(I2) pour la paire (i,j) fournit, calculer la couleur, avec rgb(i,j) ci-dessous
+		//		(I3) Utiliser l'attribut protected tabPixels de la classe parente
+		//		(I4) L'iamge est rwa major lineariser dans ce tableau 1d
+		//		(I5) Utiliser setRGB(j, i, rgb(i, j)); donne des performances catastrophique en parallel (syncro cacher), essayer!
+
+		for(int j = 0; j < w; j++)// colonnes
+			{
+			tabPixels[i * w + j] = this.rgb(i, j);
+			}
+		}
+
+	/*------------------------------*\
+	|*			  Tools				*|
+	\*------------------------------*/
+
+	/**
+	 * <pre>
+	 * Update la table de couleur
+	 * La taille utile est n-2
+	 * Atention n varie à chaque step de l'animation
+	 *
+	 * A la creation, la taille utiliser est la valeur max possible de n
+	 * Ca evite de devoir recreer un tableau a chaque fois
+	 *
+	 * on update cependant que la partie utile du tableau, selon la valeur n de l'animation,
+	 * [0,n-2] est la partie utile du tableau dont la taille va jusqua N_MAX
+	 *
+	 * la case i donne une color selon le format "int rgb"
+	 * i represente l'indice d'arret de la suite, i in [1,n]
+	 * </pre>
+	 */
+	private void updateTableColor()
+		{
+		// Indications:
+		//		(I1) partie utile de tabColor [0,n-2]
+		//		(I2) Utilisez une stream parallel
+		// 		(I3) Rappel :  range(0,v) ----> [0,v[
+		//		(I3) Aidez-vous de toColorRGB ci-dessous
+
+		int v = this.n - 1;
+		IntStream.range(0, v)//
+				.forEach(i -> tabColor[i] = toColorRGB(i));
+		}
+
+	/**
+	 * color au format int
+	 */
+	private int toColorRGB(int i)
+		{
+		float H01 = (float)calibreur.calibrer(i);
+		float color = Color.HSBtoRGB(H01, 1, 1);
+
+		return (int)color;
+		}
+
+	/*------------------------------------------------------------------*\
+	|*							Attributs Private						*|
+	\*------------------------------------------------------------------*/
+
+	// Input
+	private DomaineMandelbrot domaineMath;
+	private int n;
+	private Calibreur calibreur;
+
+	// Tools
+	private int[] tabColor;
+
+	private Variateur variateurN;
+
+	/*------------------------------*\
+	|*			  Static			*|
+	\*------------------------------*/
+
+	private static final int BLACK = Color.BLACK.getRGB();
+	}

@@ -1,0 +1,32 @@
+1634720283978	Rename type 'UseForeEach'
+1634720341559	Move compilation unit
+1634720350553	Delete element
+1634720370010	Rename package 'ch.arc.cours.b_stream.b_stream'
+1634720383682	Rename package 'ch.arc.cours.b_stream.b_stream_objet'
+1634720394358	Rename package 'ch.arc.cours.b_stream.c_stream_indice'
+1634720405244	Rename package 'ch.arc.cours.b_stream.d_referencemethode'
+1634721985008	Rename method 'useCollectCustomWarmup'
+1634721993127	Rename method 'useCollectCustom'
+1634723104615	Rename package 'ch.arc.cours.b_stream'
+1634723117780	Rename package 'ch.arc.cours.c_sequential_to_parralel'
+1634723131668	Rename package 'ch.arc.cours.d_consolidation'
+1634723143621	Rename package 'ch.arc.cours.e_complement'
+1634723157288	Rename package 'ch.arc.cours.f_application'
+1634723172050	Rename package 'ch.arc.cours.g_annexe'
+1634723315262	Rename package 'ch.arc.cours.b_defaultmethode.a_interface_functionelle_custom'
+1634723418430	Rename package 'ch.arc.cours.b_defaultmethode.a_functionalInterface_custom.a_oldstyle.add'
+1634723442268	Rename package 'ch.arc.cours.b_defaultmethode.a_functionalInterface_custom.a_newstyle'
+1634723614680	Rename package 'ch.arc.cours.b_defaultmethode.a_functionalInterface_custom'
+1634891665568	Delete element
+1634891673196	Move compilation unit
+1634891680092	Delete element
+1634891685765	Move compilation unit
+1634891690161	Move compilation unit
+1634891694571	Move compilation unit
+1634891699224	Delete element
+1634891851095	Rename type 'UseStream_03_intstream'
+1634891862179	Rename type 'UseStream_04_parallel'
+1634891894068	Copy compilation unit
+1634892790784	Rename method 'useConvertion'
+1634893422524	Rename method 'useArrayCopy'
+1634893433828	Rename method 'useListCopy'

@@ -1,0 +1,230 @@
+package ch.arc.cours.lamda.image.b_rippling;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.util.stream.IntStream;
+
+import ch.arc.cours.lamda.image.framework.image.BImage;
+import ch.arc.cours.lamda.image.framework.image.Calcul;
+
+public class Rippling extends BImage
+	{
+
+	/*------------------------------------------------------------------*\
+	|*							Constructeurs							*|
+	\*------------------------------------------------------------------*/
+
+	public Rippling(Dimension dim, Calcul fillType)
+		{
+		super(dim, "Rippling", fillType);
+
+		// Tools
+			{
+			this.dim2 = Math.min(w, h) / 2;
+			this.t = 0;
+			}
+		}
+
+	public Rippling(int w, int h, Calcul fillType)
+		{
+		this(new Dimension(w, h), fillType);
+		}
+
+	public Rippling(int w, int h)
+		{
+		this(w, h, Calcul.STREAM_PARALLEL);
+		}
+
+	public Rippling(Calcul fillType)
+		{
+		this(Toolkit.getDefaultToolkit().getScreenSize(), fillType);
+		}
+
+	public Rippling()
+		{
+		this(Calcul.STREAM_PARALLEL);
+		}
+
+	/*------------------------------------------------------------------*\
+	|*							Methodes Public							*|
+	\*------------------------------------------------------------------*/
+
+	@Override
+	public long animationStep(long iteration)
+		{
+		this.t += DT;
+		return super.animationStep(iteration);
+		}
+
+	/*------------------------------*\
+	|*			  Standard			*|
+	\*------------------------------*/
+
+	@Override
+	protected void fillStandard()
+		{
+		// Indications:
+		//		(I1) Faire varier l'indice de line i in [0,h[ et appeler colorLineI(i)
+		//		(I2) Boucle standard
+
+		for(int i = 0; i < h; i++)// lignes
+			{
+			colorLineI(i);
+			}
+		}
+
+	/*------------------------------*\
+	|*			  Stream			*|
+	\*------------------------------*/
+
+	@Override
+	protected void fillStreamSequentiel()
+		{
+		// Indications:
+		//		(I1) Faire varier l'indice de line i in [0,h[ et appeler colorLineI(i)
+		// Contraintes:
+		//		(C1) Reference methode
+
+		IntStream.range(0, this.h).forEach(this::colorLineI);
+		}
+
+	@Override
+	protected void fillStreamParallel()
+		{
+		// Indications:
+		//		(I1) Faire varier l'indice de line i in [0,h[, en parrallel,  et appeler colorLineI(i)
+		// Contraintes:
+		//		(C1) Reference methode
+
+		IntStream.range(0, this.h).parallel().forEach(this::colorLineI);
+
+
+		// Question : et si on avait paralleliser par colonne et non par ligne, quel serait les performances?
+		//		(R1) les memes?
+		//		(R2) differentes?
+		}
+
+	/*------------------------------------------------------------------*\
+	|*							Methodes Private						*|
+	\*------------------------------------------------------------------*/
+
+	private void colorLineI(int i)
+		{
+		// Indications:
+		//		(I1) Faire varier l'indice de colonne j in [0,w[, en sequentiel
+		//		(I2) pour la paire (i,j) fournit, calculer la couleur, avec rgb(i,j) ci-dessous
+		//		(I3) Utiliser l'attribut protected tabPixels de la classe parente
+		//		(I4) L'iamge est rwa major lineariser dans ce tableau 1d
+		//		(I5) Utiliser setRGB(j, i, rgb(i, j)); donne des performances catastrophique en parallel (syncro cacher), essayer!
+
+		for(int j = 0; j < w; j++)// colonnes
+			{
+			tabPixels[i * w + j] = this.rgb(i, j);
+			}
+		}
+
+	/*------------------------------*\
+	|*			  Math				*|
+	\*------------------------------*/
+
+	/**
+	 * <pre>
+	 * Fournit la couleur du pixel (i,j)
+	 *
+	 * 		i = ligne in [0,h[
+	 * 		j = colonne in [0,w[
+	 *
+	 * Format :
+	 *
+	 * 		"int rgb"
+	 * 		ie 4 octet, avec un octet pour chaque cannal couleur (R G B A)
+	 *
+	 * </pre>
+	 */
+	private int rgb(int i, int j)
+		{
+		// Indications:
+		//		(I1) appeler levelgray ci-dessous
+		//		(I2) TODO Optimiser en utilisant TAB_GRAY_TO_INTRGB
+
+		int levelGris = TAB_GRAY_TO_INTRGB[i];
+		return new Color(levelGris, levelGris, levelGris).getRGB();
+		}
+
+	/**
+	 * selon formule de math du pdf
+	 */
+	private int levelGray(int i, int j)
+		{
+		// Indications:
+		//		(I1) Utiliser dij ci-dessous
+		//		(I2) Caluler dij/10 une seule fois
+		double dij10 = this.dij(i, j) / 10;
+		double numerateur = Math.cos(dij10 - this.t / 7);
+		double denominateur = dij10 + 1;
+		return (int)(128 + 127 * (numerateur / denominateur));
+		}
+
+	/**
+	 * helper
+	 */
+	private double dij(int i, int j)
+		{
+		double fi = i - this.dim2;
+		double fj = j - this.dim2;
+		return Math.sqrt(fi * fi + fj * fj); // TODO
+		}
+
+	/*------------------------------*\
+	|*			  Static			*|
+	\*------------------------------*/
+
+	/**
+	 * <pre>
+	 * Observation:
+	 *
+	 * 		Il y 256 niveaux de gris possible [0,255].
+	 * 		Il y aurait donc 256 objet Color au format "int rgb" a fabriquer.
+	 * 		or, pour chaque pixel,on fabrique un objet Color, ce qui n'est pas parcimonieux
+	 *
+	 * Optimisation:
+	 *
+	 *		Il suffirait de calculer une fois pour toute ces 256 "Color int RGB), et les partager pour tous les pixels et toutes les instances.
+	 * 		Fabriquon une "table de couleur" qui pour chaque levelGray in [0,255] contient la color sous la forme d'un "int rgb"
+	 *
+	 * 		Utilisez a cet effet un tableau1d, et mettons le static
+	 *
+	 * Astuce:
+	 *
+	 * 		Creons un attribut static avec cette methode!
+	 * </pre>
+	 */
+	private static int[] createTableColor()
+		{
+		// Indications:
+		//		(I1) Interdit de faire du parall?lisme ici (dans un initialiser static)
+		//		(I2) "sur une seule ligne"
+
+		return IntStream.range(0,255)//
+						.map(i -> levelGray(i,i))//
+						.toArray();
+		//return null;
+		}
+
+	/*------------------------------------------------------------------*\
+	|*							Attributs Private						*|
+	\*------------------------------------------------------------------*/
+
+	// Tools
+	private double t;
+	private int dim2;
+
+	/*------------------------------*\
+	|*			  Static			*|
+	\*------------------------------*/
+
+	private static final int[] TAB_GRAY_TO_INTRGB = createTableColor();
+	private static final double DT = 2;
+
+	}

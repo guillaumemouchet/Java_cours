@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Move element &apos;NumberTools.java&apos; to &apos;PLambda/src/ch.arc.cours.g_annexe.material&apos;&#x0A;- Original project: &apos;PLambda&apos;&#x0A;- Destination element: &apos;PLambda/src/ch.arc.cours.g_annexe.material&apos;&#x0A;- Original element: &apos;ch.arc.cours.a_lamda.b_neu_interfacefonctionelle.c_binaryoperator.NumberTools.java&apos;&#x0A;- Update references to refactored element" description="Move compilation unit" destination="/src&lt;ch.arc.cours.g_annexe.material" element1="/src&lt;ch.arc.cours.a_lamda.b_neu_interfacefonctionelle.c_binaryoperator{NumberTools.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.move" patterns="*" policy="org.eclipse.jdt.ui.moveResources" qualified="false" references="true" stamp="1568795560005" units="1" version="1.0"/>
+</session>

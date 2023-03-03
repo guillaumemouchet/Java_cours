@@ -1,0 +1,243 @@
+
+package ch.arc.cours.c_stream.a_stream_objet;
+
+import java.util.Arrays;
+import java.util.IntSummaryStatistics;
+import java.util.List;
+import java.util.OptionalDouble;
+import java.util.function.DoubleConsumer;
+import java.util.function.IntFunction;
+import java.util.function.ToIntFunction;
+
+import ch.arc.cours.z_annexe.material.Personne;
+import ch.arc.cours.z_annexe.material.PersonneTools;
+
+/**
+ * <pre>
+ * Attention aux deux types ci-dessous:
+ *
+ * 		Stream<Integer>
+ * 		IntStream
+ *
+ * Avantage :
+ *
+ * 		IntStream	plus riche que 			Stream<Integer>
+ * 		IntStream	plus performant que 	Stream<Integer> , car pas de wrapper (boxing et unboxing auto, instanciation, gc)
+ *
+ * Conseil :
+ *
+ * 		Utiliser IntStream dès que possible!
+ * </pre>
+ */
+public class UseStream_04_intstream
+	{
+	/*------------------------------------------------------------------*\
+	|*							Methodes Public							*|
+	\*------------------------------------------------------------------*/
+
+	public static void main(String[] args)
+		{
+		main();
+		}
+
+	public static void main()
+		{
+		int n = 5;
+
+		System.out.println("stream : interface fonctionel : mapToInt");
+
+		// reduce easy
+			{
+			useMaptoInt(n);
+			}
+
+		// toArray easy
+			{
+			useToArray();
+
+			transformation1();
+			transformation2();
+			}
+		}
+
+	/*------------------------------------------------------------------*\
+	|*							Methodes Private						*|
+	\*------------------------------------------------------------------*/
+
+	/*------------------------------*\
+	|*		reduction / easy		*|
+	\*------------------------------*/
+
+	/**
+	 * <pre>
+	 * Quoi : 	 	mapToInt			reduce
+	 * Comment :	ToIntFunction<T> 	sum
+	 *
+	 * Probleme 1 :	somme des ages
+	 * Probleme 2 :	moyenne des hauteurs
+	 * Probleme 3 :	statistique des hauteurs
+	 * </pre>
+	 */
+	private static void useMaptoInt(int n)
+		{
+		List<Personne> list = PersonneTools.create(n);
+
+		// reference methode si possible
+			{
+			ToIntFunction<Personne> age = Personne::getAge;//
+			ToIntFunction<Personne> hauteur = Personne::getHauteur;//
+
+			int sumAge = list.stream().mapToInt(age).sum();
+
+			IntSummaryStatistics statHauteur = list.stream().mapToInt(hauteur).summaryStatistics();
+			OptionalDouble optionalAverageHauteur = list//
+					.stream()//
+					.mapToInt(hauteur)//
+					.average();//  Optional, car si liste vide, resultat vide
+
+			// sum	 				: terminal
+			// average  			: terminal
+			// summaryStatistics 	: terminal
+
+			// affichage
+				{
+				System.out.println("somme des ages = " + sumAge);
+				System.out.println("stat = " + statHauteur);
+				System.out.println("moyenne des hauteurs = ");
+
+				// old style
+					{
+					if (optionalAverageHauteur.isPresent())
+						{
+						System.out.println(optionalAverageHauteur.getAsDouble());
+						}
+					}
+
+				// new style v1
+					{
+					DoubleConsumer print = d -> System.out.println(d);//
+					optionalAverageHauteur.ifPresent(print);
+					}
+
+				// new style v2 : reference methode, sans variable
+					{
+					optionalAverageHauteur.ifPresent(System.out::println);//
+
+					}
+				}
+			}
+		}
+
+	/*------------------------------*\
+	|*		toArray	 / easy			*|
+	\*------------------------------*/
+
+	/**
+	 * Probleme :	list hauteur personne
+	 *
+	 * Comment  :   toArray
+	 */
+	private static void useToArray()
+		{
+		int n = 5;
+		List<Personne> list = PersonneTools.create(n);
+
+		// version 1 : wrapper, sans mapToInt
+			{
+			IntFunction<Integer[]> tabGenerator = Integer[]::new;//
+			Integer[] tab = list//
+					.stream()//
+					.map(Personne::getHauteur)//
+					.toArray(tabGenerator);//
+
+			System.out.println(Arrays.toString(tab));
+			}
+
+		// version 2 : sans wrapper, avec mapToInt
+			{
+			int[] tab = list.stream().mapToInt(Personne::getHauteur).toArray();//
+
+			System.out.println(Arrays.toString(tab));
+
+			// Question 1: Before mapToInt, quel est le type de votre stream? Answer : Stream<Integer>
+			// Question 2: After mapToInt,  quel est le type de votre stream? Answer : IntStream
+			}
+
+		}
+
+	/**
+	 * Quoi : Integer[] -> int[]
+	 */
+	private static void transformation1()
+		{
+		// Integer[]
+			{
+			Integer[] tabWrapper = { 1, 2, 3, 4, 5 };
+
+			int[] tab = Arrays//
+					.stream(tabWrapper)// Stream<Integer>
+					//.mapToInt(i -> i) // fonction identité puis unboxing automatique
+					//.mapToInt(i -> i.intValue())
+					.mapToInt(Integer::intValue)//
+					.toArray();
+			System.out.println(Arrays.toString(tab));
+
+			// Note : int[] tabCopy=tabSource; // compilation failed!
+			}
+
+		// int[]
+			{
+			int[] tabSource = { 1, 2, 3, 4, 5 };
+
+			//  Indication: Arrays.stream(tabSource) est de type IntStream, deja, car tabSource contient des int ! --> IMPORTANT <---
+			int[] tabCopy = Arrays//
+					.stream(tabSource)// IntStream deja
+					.toArray();
+
+			tabSource[0] = -1; // modifie pas tabCopyDeep
+			System.out.println(Arrays.toString(tabCopy));
+			}
+		}
+
+	/**
+	 * Quoi : List -> Array
+	 */
+	private static void transformation2()
+		{
+		// int[]
+			{
+			List<Integer> listSource = List.of(1, 2, 3, 4);
+
+			//  Indication: collect
+			int[] tabDestination = listSource//
+					.stream()// actuellement Stream<Integer>
+					//.toArray(n -> new int[n]);// TODO
+					//.mapToInt(Integer::intValue) // unboxing manuel IntStream
+					.mapToInt(i -> i)// unboxing auto IntStream
+					.toArray();
+
+			System.out.println(Arrays.toString(tabDestination));
+			}
+
+		// Integer[]
+			{
+			List<Integer> listSource = List.of(1, 2, 3, 4); // immubale collection
+			//List<Integer> listSource = Arrays.asList(1, 2, 3, 4);// immubale collection
+
+			//  Version1 : lambda
+			Integer[] tabDestination1 = listSource//
+					.stream()//
+					.toArray(n -> new Integer[n]);//TODO
+
+			//  Version2 : reference methode
+			Integer[] tabDestination2 = listSource//
+					.stream()//
+					.toArray(Integer[]::new);//TODO
+
+			// Affichage
+			System.out.println(Arrays.toString(tabDestination1));
+			System.out.println(Arrays.toString(tabDestination2));
+			}
+		}
+
+	}

@@ -1,0 +1,126 @@
+
+package ch.arc.cours.lamda.algo.b_montecarlo.b_hybride;
+
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.DoubleUnaryOperator;
+import java.util.function.IntUnaryOperator;
+import java.util.stream.IntStream;
+
+import org.junit.jupiter.api.Assertions;
+
+import ch.arc.cours.lamda.algo.b_montecarlo.b_hybride.helper.Montecarlo_hybride_objet_v4;
+import ch.arc.cours.lamda.algo.b_montecarlo.x_tools.MontecarloTools;
+import ch.arc.tools.Chrono;
+
+public class UseMontecarlo_hybride
+	{
+
+	/*------------------------------------------------------------------*\
+	|*							Methodes Public							*|
+	\*------------------------------------------------------------------*/
+
+	public static void main(String[] args)
+		{
+		main();
+		}
+
+	public static void main()
+		{
+		int n = Integer.MAX_VALUE / 10;
+
+		final double H = 4; // Hauteur Cible
+		Assertions.assertTrue(H >= 4); // car max(f)=4 sur [01]
+
+		System.out.println("[Montecarlo] : Please wait ...\n");
+
+		// hybride : objet & fonctionelle
+			{
+			MontecarloTools.check(montecarloV4(n, H));
+			MontecarloTools.check(montecarloV5(n, H));
+			}
+
+		System.out.println("[Montecarlo] : end");
+		}
+
+	/*------------------------------------------------------------------*\
+	|*							Methodes Private						*|
+	\*------------------------------------------------------------------*/
+
+	/*------------------------------*\
+	|*	Hybride : Objet/Fonctionelle *|
+	\*------------------------------*/
+
+	/**
+	 * <pre>
+	 * idee differente!
+	 * Ou utilise une classe separer Montecarlo_hybride pour tirer en meme temps x01 et y0H
+	 * (see package helper)
+	 *
+	 * Performance:
+	 * 		Inconvénients:
+	 * 			il y a
+	 * 				- plus d'instanciation
+	 * 				- plus destruction (Garbage)
+	 * 				- plus de liaison dynamique
+	 * 		Avantages:
+	 * 			x01 et y0H sont les deux tires en paralel, avant xeule y0H l'etait
+	 * <Pre>
+	 */
+	private static double montecarloV4(int n, double H)
+		{
+		Chrono chrono = new Chrono();
+
+		DoubleUnaryOperator f = x -> 4 / (1 + x * x);//
+		IntUnaryOperator isEndessous = i -> Montecarlo_hybride_objet_v4.isEnDessous(f, H);//
+
+		int nSousCourbe = IntStream//
+				.range(0, n)//
+				.parallel()//
+				.map(isEndessous)//
+				.sum();//
+
+		chrono.stop();
+		MontecarloTools.performance("v4 hybride", chrono, n, Double.BYTES);
+
+		return H * nSousCourbe / n;
+		}
+
+	/**
+	 * <pre>
+	 * Idem v4, mais on de-objet-ifie
+	 * ie on code tout dans une methode isEndessous static de Monetecarlo
+	 * Tout est coder dans cette methode static.
+	 * (see package helper)
+	 *
+	 * On efface les defauts de la methode v4
+	 * </pre>
+	 */
+	private static double montecarloV5(int n, double H)
+		{
+		Chrono chrono = new Chrono();
+
+		DoubleUnaryOperator f = x -> 4 / (1 + x * x);//
+		//IntUnaryOperator isEndessous = i -> Montecarlo_hybride_static_v5.isEnDessous(f, H);//
+		IntUnaryOperator isEndessous = i -> isEnDessous(f, H);//
+
+		int nSousCourbe = IntStream//
+				.range(0, n)//
+				.parallel()//
+				.map(isEndessous)//
+				.sum();//
+
+		chrono.stop();
+		MontecarloTools.performance("v5 hybride static", chrono, n, Double.BYTES);
+
+		return H * nSousCourbe / n;
+		}
+
+	public static int isEnDessous(DoubleUnaryOperator f, double h)
+		{
+		ThreadLocalRandom current = ThreadLocalRandom.current();
+		double x = current.nextDouble();
+		double y = current.nextDouble(h);
+		return f.applyAsDouble(x) > y ? 1 : 0;
+		}
+
+	}

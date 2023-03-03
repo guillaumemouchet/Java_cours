@@ -1,0 +1,211 @@
+
+package ch.arc.cours.lamda.algo.a_slice;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.DoubleUnaryOperator;
+import java.util.function.Function;
+import java.util.function.IntToDoubleFunction;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Assertions;
+
+import ch.arc.tools.Chrono;
+import ch.arc.tools.Maths;
+
+public class UseSlice
+	{
+
+	/*------------------------------------------------------------------*\
+	|*							Methodes Public							*|
+	\*------------------------------------------------------------------*/
+
+	public static void main(String[] args)
+		{
+		main();
+		}
+
+	public static void main()
+		{
+		int n = Integer.MAX_VALUE / 5;
+
+		System.out.println("[Slice] : Please wait ...\n");
+
+//		check(sliceV0(n));
+//		check(sliceV1(n));
+//		check(sliceV2(n));
+//		check(sliceV3(n));
+//		check(sliceV4(n));
+
+		System.out.println("[Slice] : end");
+		
+		String[] tabS1 = { "hello", "world" };
+		String[] tabS2 = { "!", ":D" };
+		List<String[]> list = List.of(tabS1, tabS2);
+
+		list.stream() // Stream<String[]>
+		        .parallel() // pas besoin de parallelisme si y a qu'un sysout
+		        .map(Arrays::stream) // Stream<Stream<String>>
+		        .reduce(Stream.empty(), (s1, s2) -> Stream.concat(s1, s2))
+		        // terminal mais genere nouveau Stream<String>
+		        .forEach(System.out::println);
+		}
+
+	/*------------------------------------------------------------------*\
+	|*							Methodes Private						*|
+	\*------------------------------------------------------------------*/
+
+	/**
+	 * <pre>
+	 * Avec wrappper!
+	 *
+	 * Maladroit
+	 * Mauvais choix de l'interface fonctionelle
+	 * </pre>
+	 */
+	private static double sliceV0(int n)
+		{
+		Chrono chrono = new Chrono();
+		final double DX = 1.0 / n;
+
+		Function<Double, Double> f = x -> 4.0 / (1.0 + x * x);
+
+		// 3 map
+		double result = IntStream//
+				.range(0, n)//IntStream
+				.mapToObj(i -> i * DX)//i -> Xi //Stream<Double>
+				//.map(xi -> f.apply(xi))//Xi -> f(Xi)
+				.map(f)//Xi -> f(Xi)
+				.map(fxi -> fxi * DX)//f(Xi) -> aire(slice(i))
+				.reduce(0.0, Double::sum);
+
+		System.out.println(chrono);
+		return result;
+		}
+
+	/**
+	 * <pre>
+	 * Sans wrappper !
+	 *
+	 * Meilleur choix de l'interface fonctionnelle
+	 * DoubleStream
+	 * </pre>
+	 */
+	private static double sliceV1(int n)
+		{
+		Chrono chrono = new Chrono();
+		final double DX = 1 / (double)n;
+
+		// comme une function, mais avec meme interval de depart et d'arriver, evite les wrappers
+		DoubleUnaryOperator f = x -> 4.0 / (1.0 + x * x);
+
+		// 3 map
+		double result = IntStream//
+				.range(0, n)//IntStream
+				.mapToDouble(i -> i * DX)//i -> Xi //DoubleStream
+				.map(f)//Xi -> f(Xi)
+				.map(fxi -> fxi * DX)//f(Xi) -> aire(slice(i))
+				.sum();
+
+		System.out.println(chrono);
+		return result;
+		}
+
+	/**
+	 * <pre>
+	 * un map en moins
+	 * g plus complexe
+	 * </pre>
+	 */
+	private static double sliceV2(int n)
+		{
+		Chrono chrono = new Chrono();
+
+		final double DX = 1 / (double)n;
+
+		DoubleUnaryOperator f = x -> 4.0 / (1.0 + x * x);
+		DoubleUnaryOperator aireSliceixi = xi -> f.applyAsDouble(xi) * DX;
+
+		// 2 map
+		double result = IntStream//
+				.range(0, n)//IntStream
+				.mapToDouble(i -> i * DX)//i -> Xi //DoubleStream
+				.map(aireSliceixi)//Xi -> aire(slice(i))
+				.sum();
+
+		System.out.println(chrono);
+		return result;
+		}
+
+	/**
+	 * <pre>
+	 * sans wrapper!
+	 *
+	 * encore un map en moins
+	 * meilleur interface fonctionelle
+	 * <pre>
+	 */
+	private static double sliceV3(int n)
+		{
+		Chrono chrono = new Chrono();
+
+		final double DX = 1 / (double)n;
+
+		DoubleUnaryOperator f = x -> 4.0 / (1.0 + x * x);
+		IntToDoubleFunction aireSlice = i -> f.applyAsDouble(i * DX) * DX;
+
+		double result = IntStream//
+				.range(0, n)//IntStream
+				.mapToDouble(aireSlice)//i -> Xi //DoubleStream
+				.sum();
+
+		System.out.println(chrono);
+		return result;
+		}
+
+	/*------------------------------*\
+	|*			  Parallel			*|
+	\*------------------------------*/
+
+	// D'abord on a optimiser au max la version sequentiel, puis seulement ensuite on passe au parallélisme
+
+	/**
+	 * <pre>
+	 * en parallel
+	 * Chrono exploser
+	 * </pre>
+	 */
+	private static double sliceV4(int n)
+		{
+		Chrono chrono = new Chrono();
+
+		final double DX = 1 / (double)n;
+
+		DoubleUnaryOperator f = x -> 4.0 / (1.0 + x * x);
+		IntToDoubleFunction aireSlice = i -> f.applyAsDouble(i * DX) * DX;
+
+		double result = IntStream//
+				.range(0, n)//IntStream
+				.parallel()
+				.mapToDouble(aireSlice)//i -> Xi //DoubleStream
+				.sum();
+
+		System.out.println(chrono);
+		return result;
+		}
+
+	/*------------------------------*\
+	|*			  Tools				*|
+	\*------------------------------*/
+
+	private static void check(double pihat)
+		{
+		System.out.println("\nPi Hat = " + String.format("%.9f", pihat));
+		System.out.println("Pi     = " + String.format("%.9f", Math.PI));
+		System.out.println();
+
+		Assertions.assertTrue(Maths.isEquals(Math.PI, pihat, 1e-8));
+		}
+
+	}

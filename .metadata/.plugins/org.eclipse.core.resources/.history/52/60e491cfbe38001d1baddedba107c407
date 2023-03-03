@@ -1,0 +1,124 @@
+
+package ch.arc.cours.a_lamda.b_neu_interfacefonctionelle.b_consumer;
+
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+
+import ch.arc.cours.z_annexe.material.Homme;
+import ch.arc.cours.z_annexe.material.HommeTools;
+
+public class UsePredicateConsumer
+	{
+
+	/*------------------------------------------------------------------*\
+	|*							Methodes Public							*|
+	\*------------------------------------------------------------------*/
+
+	public static void main(String[] args)
+		{
+		main();
+		}
+
+	public static void main()
+		{
+		System.out.println("foreach & filter: Consumer & Predicate");
+
+		foreachFilter();
+		}
+
+	private static void foreachFilter()
+		{
+		int n = 5;
+
+		// standard
+			{
+			version1(n);
+			}
+
+		// lamda
+			{
+			version2(n);
+			version3(n);
+			}
+		}
+
+	/*------------------------------------------------------------------*\
+	|*							Methodes Private						*|
+	\*------------------------------------------------------------------*/
+
+	/*------------------------------*\
+	|*	Predicate<T> & Consumer<T>	*|
+	\*------------------------------*/
+
+	/**
+	 * Opposer le poids de l'homme, dont la hauteur est > 20
+	 *
+	 * Classe interne anonyme dans variable
+	 */
+	private static void version1(int n)
+		{
+		Iterable<Homme> iterable = HommeTools.create(n);
+
+		System.out.println("Before  : " + iterable + "\n");
+
+		Predicate<Homme> predicate = new Predicate<Homme>()
+			{
+
+			@Override
+			public boolean test(Homme h)
+				{
+				return h.getHauteur() > 20;
+				}
+			};
+
+		Consumer<Homme> consumer = new Consumer<Homme>()
+			{
+
+			@Override
+			public void accept(Homme h)
+				{
+				h.opposePoids();
+				}
+			};
+
+		HommeManipulator.filterForeach(iterable, predicate, consumer);
+
+		System.out.println("After 1 : " + iterable);
+		}
+
+	/**
+	 * Opposer le poids de l'homme, dont la hauteur est > 20
+	 *
+	 * lamda dans variable
+	 */
+	private static void version2(int n)
+		{
+		Iterable<Homme> iterable = HommeTools.create(n);
+
+		Predicate<Homme> predicate = h -> h.getHauteur() > 20;
+		Consumer<Homme> consumer = h -> h.opposePoids();
+
+		HommeManipulator.filterForeach(iterable, predicate, consumer);
+
+		System.out.println("After 2 : " + iterable);
+		}
+
+	/**
+	 * Opposer le poids de l'homme, dont la hauteur est > 20
+	 *
+	 * reference methode avec variable, quand c'est possible !
+	 */
+	private static void version3(int n)
+		{
+		Iterable<Homme> iterable = HommeTools.create(n);
+
+		Predicate<Homme> predicate = Homme::getHauteur > 20;
+		Consumer<Homme> consumer = Homme::opposePoids;
+
+		HommeManipulator.filterForeach(iterable, predicate, consumer);
+
+		System.out.println("After 3 : " + iterable);
+		System.out.println(iterable);
+		}
+
+	}

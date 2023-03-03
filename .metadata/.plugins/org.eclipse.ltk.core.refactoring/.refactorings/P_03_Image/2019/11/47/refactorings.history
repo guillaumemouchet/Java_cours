@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring accessors="true" comment="Delete element from project &apos;P_03_Image&apos;&#x0A;- Original project: &apos;P_03_Image&apos;&#x0A;- Original element: &apos;P_03_Image/src/ch.arc.cours.lamda.referencemethode&apos;&#x0A;- Delete subpackages" description="Delete element" element1="/src&lt;ch.arc.cours.lamda.referencemethode.tools" element2="/src&lt;ch.arc.cours.lamda.referencemethode" element3="/src&lt;ch.arc.cours.lamda" element4="/src&lt;ch.arc.cours" element5="/src&lt;ch.arc" element6="/src&lt;ch" elements="6" flags="589830" id="org.eclipse.jdt.ui.delete" resources="0" stamp="1574161094732" subPackages="true" version="1.0"/>
+</session>
