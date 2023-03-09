@@ -1,3 +1,4 @@
+
 package ch.arc.cours.lamda.image.b_rippling;
 
 import java.awt.Color;
@@ -5,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.util.stream.IntStream;
 
+import ch.arc.cours.lamda.image.c_mandelbrot.tools.Calibreur;
+import ch.arc.cours.lamda.image.c_mandelbrot.tools.Interval;
 import ch.arc.cours.lamda.image.framework.image.BImage;
 import ch.arc.cours.lamda.image.framework.image.Calcul;
 
@@ -99,7 +102,6 @@ public class Rippling extends BImage
 
 		IntStream.range(0, this.h).parallel().forEach(this::colorLineI);
 
-
 		// Question : et si on avait paralleliser par colonne et non par ligne, quel serait les performances?
 		//		(R1) les memes?
 		//		(R2) differentes?
@@ -148,7 +150,7 @@ public class Rippling extends BImage
 		//		(I1) appeler levelgray ci-dessous
 		//		(I2) TODO Optimiser en utilisant TAB_GRAY_TO_INTRGB
 
-		int levelGris = TAB_GRAY_TO_INTRGB[i];
+		int levelGris = levelGray(i, j);
 		return new Color(levelGris, levelGris, levelGris).getRGB();
 		}
 
@@ -200,16 +202,18 @@ public class Rippling extends BImage
 	 * 		Creons un attribut static avec cette methode!
 	 * </pre>
 	 */
-	private static int[] createTableColor()
+	private void createTableColor()
 		{
 		// Indications:
 		//		(I1) Interdit de faire du parall?lisme ici (dans un initialiser static)
 		//		(I2) "sur une seule ligne"
 
-		return IntStream.range(0,255)//
-						.map(i -> levelGray(i,i))//
-						.toArray();
-		//return null;
+		Interval intervalUtile = new Interval(0, this.n -2);
+		Interval intervalhue01 = new Interval(0,1);
+
+		Calibreur calibreur = new Calibreur(intervalUtile, intervalhue01);
+		IntStream.range(0, this.n -1)//
+						.forEach(i -> this.tabColor[i] = toColorRGB(i, calibreur));
 		}
 
 	/*------------------------------------------------------------------*\

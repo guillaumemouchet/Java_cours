@@ -6,80 +6,81 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.util.stream.IntStream;
 
+import ch.arc.cours.lamda.image.c_mandelbrot.tools.Calibreur;
+import ch.arc.cours.lamda.image.c_mandelbrot.tools.Interval;
 import ch.arc.cours.lamda.image.framework.image.BImage;
 import ch.arc.cours.lamda.image.framework.image.Calcul;
 
 public class Rippling extends BImage
 	{
-
+	
 	/*------------------------------------------------------------------*\
 	|*							Constructeurs							*|
 	\*------------------------------------------------------------------*/
-
+	
 	public Rippling(Dimension dim, Calcul fillType)
 		{
 		super(dim, "Rippling", fillType);
-
+		
 		// Tools
 			{
 			this.dim2 = Math.min(w, h) / 2;
 			this.t = 0;
 			}
 		}
-
+		
 	public Rippling(int w, int h, Calcul fillType)
 		{
 		this(new Dimension(w, h), fillType);
 		}
-
+		
 	public Rippling(int w, int h)
 		{
 		this(w, h, Calcul.STREAM_PARALLEL);
 		}
-
+		
 	public Rippling(Calcul fillType)
 		{
 		this(Toolkit.getDefaultToolkit().getScreenSize(), fillType);
 		}
-
+		
 	public Rippling()
 		{
 		this(Calcul.STREAM_PARALLEL);
 		}
-
+		
 	/*------------------------------------------------------------------*\
 	|*							Methodes Public							*|
 	\*------------------------------------------------------------------*/
-
+	
 	@Override
 	public long animationStep(long iteration)
 		{
 		this.t += DT;
-
 		return super.animationStep(iteration);
 		}
-
+		
 	/*------------------------------*\
 	|*			  Standard			*|
 	\*------------------------------*/
-
+	
 	@Override
 	protected void fillStandard()
 		{
 		// Indications:
 		//		(I1) Faire varier l'indice de line i in [0,h[ et appeler colorLineI(i)
 		//		(I2) Boucle standard
-
+		
 		for(int i = 0; i < h; i++)// lignes
 			{
 			colorLineI(i);
 			}
 		}
-
+		
 	/*------------------------------*\
 	|*			  Stream			*|
 	\*------------------------------*/
-
+	
 	@Override
 	protected void fillStreamSequentiel()
 		{
@@ -87,10 +88,10 @@ public class Rippling extends BImage
 		//		(I1) Faire varier l'indice de line i in [0,h[ et appeler colorLineI(i)
 		// Contraintes:
 		//		(C1) Reference methode
-
+		
 		IntStream.range(0, this.h).forEach(this::colorLineI);
 		}
-
+		
 	@Override
 	protected void fillStreamParallel()
 		{
@@ -98,18 +99,18 @@ public class Rippling extends BImage
 		//		(I1) Faire varier l'indice de line i in [0,h[, en parrallel,  et appeler colorLineI(i)
 		// Contraintes:
 		//		(C1) Reference methode
-
+		
 		IntStream.range(0, this.h).parallel().forEach(this::colorLineI);
-
+		
 		// Question : et si on avait paralleliser par colonne et non par ligne, quel serait les performances?
 		//		(R1) les memes?
 		//		(R2) differentes?
 		}
-
+		
 	/*------------------------------------------------------------------*\
 	|*							Methodes Private						*|
 	\*------------------------------------------------------------------*/
-
+	
 	private void colorLineI(int i)
 		{
 		// Indications:
@@ -118,17 +119,17 @@ public class Rippling extends BImage
 		//		(I3) Utiliser l'attribut protected tabPixels de la classe parente
 		//		(I4) L'iamge est rwa major lineariser dans ce tableau 1d
 		//		(I5) Utiliser setRGB(j, i, rgb(i, j)); donne des performances catastrophique en parallel (syncro cacher), essayer!
-
+		
 		for(int j = 0; j < w; j++)// colonnes
 			{
 			tabPixels[i * w + j] = this.rgb(i, j);
 			}
 		}
-
+		
 	/*------------------------------*\
 	|*			  Math				*|
 	\*------------------------------*/
-
+	
 	/**
 	 * <pre>
 	 * Fournit la couleur du pixel (i,j)
@@ -148,11 +149,11 @@ public class Rippling extends BImage
 		// Indications:
 		//		(I1) appeler levelgray ci-dessous
 		//		(I2) TODO Optimiser en utilisant TAB_GRAY_TO_INTRGB
-
+		
 		int levelGris = levelGray(i, j);
-		return TAB_GRAY_TO_INTRGB[levelGris];
+		return new Color(levelGris, levelGris, levelGris).getRGB();
 		}
-
+		
 	/**
 	 * selon formule de math du pdf
 	 */
@@ -166,7 +167,7 @@ public class Rippling extends BImage
 		double denominateur = dij10 + 1;
 		return (int)(128 + 127 * (numerateur / denominateur));
 		}
-
+		
 	/**
 	 * helper
 	 */
@@ -176,11 +177,11 @@ public class Rippling extends BImage
 		double fj = j - this.dim2;
 		return Math.sqrt(fi * fi + fj * fj); // TODO
 		}
-
+		
 	/*------------------------------*\
 	|*			  Static			*|
 	\*------------------------------*/
-
+	
 	/**
 	 * <pre>
 	 * Observation:
@@ -207,23 +208,29 @@ public class Rippling extends BImage
 		//		(I1) Interdit de faire du parall?lisme ici (dans un initialiser static)
 		//		(I2) "sur une seule ligne"
 
-		return IntStream.range(0, 256)//
-						.map(i -> new Color(i, i, i).getRGB())//
-						.toArray();
-		}
+		Interval intervalUtile = new Interval(0, this.n -2);
+		Interval intervalhue01 = new Interval(0,1);
 
+		Calibreur calibreur = new Calibreur(intervaleUtile, interval)
+		//return IntStream.range(0,255)//
+		//				.map(i -> levelGray(i,i))//
+		//				.toArray();
+		return null;
+		}
+	
 	/*------------------------------------------------------------------*\
 	|*							Attributs Private						*|
 	\*------------------------------------------------------------------*/
-
+	
 	// Tools
 	private double t;
 	private int dim2;
+	
 	/*------------------------------*\
 	|*			  Static			*|
 	\*------------------------------*/
-
+	
 	private static final int[] TAB_GRAY_TO_INTRGB = createTableColor();
 	private static final double DT = 2;
-
+	
 	}

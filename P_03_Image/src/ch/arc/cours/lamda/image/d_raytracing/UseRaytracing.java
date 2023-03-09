@@ -120,6 +120,6 @@ public class UseRaytracing
 	|*			  Static			*|
 	\*------------------------------*/
 
-	private static final Mode MODE = Mode.RENDERING;//Mode.valueOf(System.getProperty("mode"));
+	private static final Mode MODE = Mode.SPEEDUP_MODEL;//Mode.valueOf(System.getProperty("mode"));
 
 	}

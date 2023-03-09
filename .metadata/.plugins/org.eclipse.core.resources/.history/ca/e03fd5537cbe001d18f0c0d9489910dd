@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.util.stream.IntStream;
 
+import ch.arc.cours.lamda.image.c_mandelbrot.tools.Calibreur;
+import ch.arc.cours.lamda.image.c_mandelbrot.tools.Interval;
 import ch.arc.cours.lamda.image.framework.image.BImage;
 import ch.arc.cours.lamda.image.framework.image.Calcul;
 
@@ -55,7 +57,6 @@ public class Rippling extends BImage
 	public long animationStep(long iteration)
 		{
 		this.t += DT;
-
 		return super.animationStep(iteration);
 		}
 
@@ -150,7 +151,7 @@ public class Rippling extends BImage
 		//		(I2) TODO Optimiser en utilisant TAB_GRAY_TO_INTRGB
 
 		int levelGris = levelGray(i, j);
-		return TAB_GRAY_TO_INTRGB[levelGris];
+		return new Color(levelGris, levelGris, levelGris).getRGB();
 		}
 
 	/**
@@ -207,9 +208,14 @@ public class Rippling extends BImage
 		//		(I1) Interdit de faire du parall?lisme ici (dans un initialiser static)
 		//		(I2) "sur une seule ligne"
 
-		return IntStream.range(0, 256)//
-						.map(i -> new Color(i, i, i).getRGB())//
-						.toArray();
+		Interval intervalUtile = new Interval(0, this.n -2);
+		Interval intervalhue01 = new Interval(0,1);
+
+		Calibreur calibreur = new Calibreur(intervaleUtile, interval)
+		//return IntStream.range(0,255)//
+		//				.map(i -> levelGray(i,i))//
+		//				.toArray();
+		return null;
 		}
 
 	/*------------------------------------------------------------------*\
@@ -219,6 +225,7 @@ public class Rippling extends BImage
 	// Tools
 	private double t;
 	private int dim2;
+
 	/*------------------------------*\
 	|*			  Static			*|
 	\*------------------------------*/
