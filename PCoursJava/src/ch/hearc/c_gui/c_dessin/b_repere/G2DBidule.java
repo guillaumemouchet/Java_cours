@@ -1,0 +1,171 @@
+
+package ch.hearc.c_gui.c_dessin.b_repere;
+
+import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import javax.swing.JComponent;
+
+import ch.hearc.b_poo.j_thread.Threads;
+import ch.hearc.c_gui.tools.G2D_I;
+
+public class G2DBidule implements G2D_I
+	{
+
+	/*------------------------------------------------------------------*\
+	|*							Constructeurs							*|
+	\*------------------------------------------------------------------*/
+
+	public G2DBidule(int rayon, int nbCharriots, JComponent jcomponent)
+		{
+		//inputs
+			{
+			this.rayon = rayon;
+			this.nbCharriots = nbCharriots;
+			this.jcomponent = jcomponent;
+			}
+
+		//Tools animation
+			{
+			this.alphaAnimation = 0;
+			this.deltaAlphaAnimation = Math.PI / 500;
+			this.isFini = new AtomicBoolean(true);
+			this.timeSleep = 5;
+			}
+
+		formes();
+		}
+
+	/*------------------------------------------------------------------*\
+	|*							Methodes Public							*|
+	\*------------------------------------------------------------------*/
+
+	@Override
+	public void draw(Graphics2D g2d, int w, int h)
+		{
+		this.rayon = Math.min(w, h) * 3 / 4 / 2;
+
+		g2d.translate(w / 2, h / 2);
+		g2d.rotate(this.alphaAnimation);
+
+		drawBidule(g2d);
+
+		g2d.rotate(-this.alphaAnimation);
+		g2d.translate(-w / 2, -h / 2);
+		}
+
+	/*------------------------------------------------------------------*\
+	|*							Methodes Private						*|
+	\*------------------------------------------------------------------*/
+
+	/*------------------------------*\
+	|*			Géométrie  	 	    *|
+	\*------------------------------*/
+
+	private void formes()
+		{
+		this.charriot = new Rectangle2D.Double(-5, -10, 10, 20);
+		}
+
+	private void drawBidule(Graphics2D g2d)
+		{
+		for(int i = 0; i < nbCharriots; i++)
+			{
+			g2d.translate(this.rayon, 0);
+			g2d.draw(charriot);
+			g2d.translate(-this.rayon, 0);
+
+			g2d.rotate((Math.PI * 2) / nbCharriots);
+			}
+		}
+
+	/*------------------------------*\
+	|*			Animation	  	    *|
+	\*------------------------------*/
+
+	public synchronized void start() // 2 thread différent peuvent pas l'appeler en même temps (jetons).
+		{
+		this.isFini.set(false);
+		this.threadAnimation = new Thread(createRunnable());
+		this.threadAnimation.setName("ThreadAnimation");
+		this.threadAnimation.start(); //warning pas run /!\
+		}
+
+	public synchronized void stop()
+		{
+		//V1
+		//			{
+		//			this.threadAnimation.stop();
+		//			}
+
+		//V2
+			{
+			this.isFini.set(true);
+			}
+		}
+
+	private Runnable createRunnable()
+		{
+		return new Runnable()
+			{
+
+			@Override
+			public void run()
+				{
+				//while(!G2DBidule.this.isFini.get())
+				while(!isFini.get())
+					{
+					animationStep();
+					Threads.sleep(timeSleep);
+					}
+				}
+			};
+		}
+
+	private void animationStep()
+		{
+		this.alphaAnimation += this.deltaAlphaAnimation;
+		this.jcomponent.repaint(); //demande à l'AWTQevent de repaindre quand elle le peut (Asychrone, commande honoré plus tard lorsque elle atteindra la première place de la file d'attente de l'AWTQevent )
+		}
+
+	public int getTimeSleep()
+		{
+		return this.timeSleep;
+		}
+
+	public void setTimeSleep(int number)
+		{
+		this.timeSleep = number;
+		}
+
+	public void setDeltaAlphaAnimation(double number)
+		{
+		this.deltaAlphaAnimation = number;
+		}
+
+	public void setNbCharriot(int nbCharriot)
+		{
+		this.nbCharriots = nbCharriot;
+		}
+	/*------------------------------------------------------------------*\
+	|*							Attributs Private						*|
+	\*------------------------------------------------------------------*/
+
+	//Inputs
+	private int rayon;
+	private int nbCharriots;
+	private JComponent jcomponent;
+
+	//Tools
+	private Rectangle2D.Double charriot;
+
+	//Tools Animation
+	private double alphaAnimation;
+	private double deltaAlphaAnimation;
+	private Thread threadAnimation;
+	private AtomicBoolean isFini;
+
+	private int timeSleep;
+
+	}

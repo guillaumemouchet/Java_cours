@@ -1,0 +1,61 @@
+------------------------------------------
+Cours 4
+------------------------------------------
+
+
+------------------------------------------
+Cours 3
+------------------------------------------
+
+EX1 : Combine de fois dois t on jetter en moyenne un dé a si face pour obtenir au moins une fois chacune des 6 faces!
+	  Ecrire un code java en 3 classes qui réponds à ce problème
+	  
+	  		Experience // juste une experience!  on lance jusqu a obtenir une fois chacune des 6 faces, 
+	  					on commpte le nombre de lancé qu'il a fallu, et on le return
+	  					methode : int run()
+	  					
+	  		Dice	// emploie plsuieurs fois Experience et moyenne les résultats
+	  				methode : int run(int nbExperience)// retourne le lombre de lancé moyen
+	  				
+	  		UseDice
+	  			
+
+	 Indications: 
+	 
+	 		(I1) Utiliser ce qui a été vu au cours
+	 		(I1) Utiliser la classe Random
+	 		(I3) Utiliser la methode ceil de Math
+
+------------------------------------------
+Cours 2
+------------------------------------------
+
+Ex1 :
+	- "Prouver" que la version de la méthode printV1 est "le musée des horreurs" spécialement avec une Linkedlist, indication : Faire des maths, calcule de complexité
+Ex2 :
+	- coder la classe UseBList avec la méthode private static print(listX, listY)
+	- affiche sous la forme
+		(x0,y0)
+		(x1,y1)
+		(x2,y2)
+	indications : créer les listes, les remplir etc..
+	objectif : mettre en pratique ce qu'on a vu pendant le cours
+	
+------------------------------------------
+Cours 1
+------------------------------------------
+
+EX1:
+	coder classe quadratique avec 3 méthodes : 
+	- solve // reçoit 3 paramètre a,b,c et output un tableau
+	- print // reçoit a,b,c et le tableau (affichage joli)
+	- discriminant // reçoit a,b,c et retourne le discriminant
+	
+	code classe useQuadratique avec 3 méthodes privées :
+	- use0 // equation avec 0 sollution
+	- use1 // equation avec 1 sollution
+	- use2 // equation avec 2 sollutions
+
+------------------------------------------
+Start 
+------------------------------------------

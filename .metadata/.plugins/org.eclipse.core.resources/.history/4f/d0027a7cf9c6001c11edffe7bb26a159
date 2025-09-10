@@ -1,0 +1,41 @@
+
+package ch.hearc.d_flux.a_file.a_bin.b_object;
+
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+
+import ch.hearc.d_flux.a_file.a_bin.b_object.materiel.Equipe;
+import ch.hearc.d_flux.a_file.a_bin.b_object.materiel.Joueur;
+
+public class TestSerializerFile
+	{
+	
+	/*------------------------------------------------------------------*\
+	 |*							Methodes Public							*|
+	 \*-----------------------------------------------------------------*/
+	
+	@Test
+	public void testClone()
+		{
+		Equipe equipe = createEquipe();
+		Equipe equipeClone = SerializerFile.clone(equipe);
+		
+		}
+		
+	/*------------------------------------------------------------------*\
+	|*							Methodes Private						*|
+	\*------------------------------------------------------------------*/
+	
+	private static Equipe createEquipe()
+		{
+		Joueur joueur1 = new Joueur("joueur1", 1);
+		Joueur joueur2 = new Joueur("joueur2", 2);
+		Joueur joueur3 = new Joueur("joueur3", 3);
+		Joueur joueur4 = new Joueur("joueur4", 4);
+		
+		List<Joueur> listJoueurs = List.of(joueur1, joueur2, joueur3, joueur4);
+		
+		return new Equipe("equipe1", listJoueurs);
+		}
+	}

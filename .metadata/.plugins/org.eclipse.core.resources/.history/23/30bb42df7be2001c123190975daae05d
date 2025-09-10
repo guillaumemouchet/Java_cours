@@ -1,0 +1,142 @@
+
+package ch.hearc.e_socket.bin.c_example.c_remotedesktop.d_warmup.mouse;
+
+import ch.hearc.b_poo.j_thread.Threads;
+import ch.hearc.device.usb.api.generic.listener.ComponentEvent;
+import ch.hearc.device.usb.api.generic.listener.GamepadListener;
+import ch.hearc.device.usb.use.a_xeox.ComponentXeox;
+import ch.hearc.device.usb.use.a_xeox.GamepadXeox;
+import ch.hearc.e_socket.bin.c_example.c_remotedesktop.b_server.applicatif.MouseService;
+
+public class MouseMover
+	{
+	
+	/*------------------------------------------------------------------*\
+	|*							Constructeurs							*|
+	\*------------------------------------------------------------------*/
+	
+	public MouseMover()
+		{
+		this.valueXOld = 0;
+		this.mouseService = MouseService.getInstance();
+		}
+		
+	/*------------------------------------------------------------------*\
+	|*							Methodes Public							*|
+	\*------------------------------------------------------------------*/
+	
+	public void run()
+		{
+		GamepadXeox.getInstance().addGamepadListener(createGamepadListener());
+		}
+		
+	/*------------------------------*\
+	|*				Get				*|
+	\*------------------------------*/
+	
+	/*------------------------------------------------------------------*\
+	|*							Methodes Private						*|
+	\*------------------------------------------------------------------*/
+	
+	private GamepadListener createGamepadListener()
+		{
+		return new GamepadListener()
+			{
+			
+			@Override
+			public void connected(Object arg0)
+				{
+				// rien
+				}
+				
+			@Override
+			public void componentPerformed(ComponentEvent e)
+				{
+				processEvent(e);
+				}
+			};
+		}
+		
+	private void processEvent(ComponentEvent e)
+		{
+		ComponentXeox componentXeox = (ComponentXeox)e.getSource();
+		double value = e.getValue();
+		
+		switch(componentXeox)
+			{
+			case BUTTON_A:
+				break;
+			case BUTTON_B:
+				mouseService.clickRight();
+				System.out.println("Click droit");
+				break;
+			case BUTTON_X:
+				mouseService.clickLeft();
+				break;
+			case BUTTON_Y:
+				break;
+			case JOYSTICK_LEFT_LEFT_RIGHT:
+				break;
+			case JOYSTICK_LEFT_UP_DOWN:
+				break;
+			case JOYSTICK_RIGHT_LEFT_RIGHT:
+				{
+				if (value != valueXOld)
+					{
+					valueXOld = value;
+					moveDx(value);
+					}
+				break;
+				}
+			case JOYSTICK_RIGHT_UP_DOWN:
+				break;
+			default:
+				break;
+			
+			}
+			
+		}
+		
+	private void moveDx(double value)
+		{
+		if (this.threadDx != null)
+			{
+			this.threadDx.stop();
+			}
+			
+		this.threadDx = new Thread(createRunnable(value));
+		this.threadDx.start();
+		}
+		
+	private Runnable createRunnable(double value)
+		{
+		return new Runnable()
+			{
+			
+			@Override
+			public void run()
+				{
+				int dx = (int)(AMPLIFICATION * value);
+				while(true)
+					{
+					mouseService.translate(dx, 0);
+					Threads.sleep(15);
+					}
+				}
+			};
+		}
+	/*------------------------------------------------------------------*\
+	|*							Attributs Private						*|
+	\*------------------------------------------------------------------*/
+	
+	// Inputs
+	
+	// Tools
+	private Thread threadDx;
+	private Thread threadDy;
+	private double valueXOld;
+	private double valueYOld;
+	private MouseService mouseService;
+	
+	private static final int AMPLIFICATION = 15;
+	}

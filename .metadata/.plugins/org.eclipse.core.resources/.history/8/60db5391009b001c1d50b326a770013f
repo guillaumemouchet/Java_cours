@@ -1,0 +1,82 @@
+
+package ch.hearc.c_gui.b_layout.composition.hello;
+
+import java.awt.Color;
+import java.awt.GridLayout;
+
+import javax.swing.JPanel;
+
+import ch.hearc.c_gui.b_layout.atomiques.a_sanslayout.JPanelSansLayout;
+import ch.hearc.c_gui.b_layout.atomiques.b_borderlayout.JPanelBorderLayout;
+import ch.hearc.c_gui.b_layout.atomiques.c_flowlayout.JPanelFlowLayout;
+import ch.hearc.c_gui.b_layout.atomiques.d_gridlayout.JPanelGridLayout;
+
+public class JPanelHelloComposition extends JPanel
+	{
+	
+	/*------------------------------------------------------------------*\
+	|*							Constructeurs							*|
+	\*------------------------------------------------------------------*/
+	
+	public JPanelHelloComposition()
+		{
+		geometry();
+		control();
+		appearance();
+		}
+		
+	/*------------------------------------------------------------------*\
+	|*							Methodes Public							*|
+	\*------------------------------------------------------------------*/
+	
+	/*------------------------------*\
+	|*				Get				*|
+	\*------------------------------*/
+	
+	/*------------------------------------------------------------------*\
+	|*							Methodes Private						*|
+	\*------------------------------------------------------------------*/
+	
+	private void geometry()
+		{
+		this.jpanelsanslayout = new JPanelSansLayout();
+		this.jpanelborderlayout = new JPanelBorderLayout();
+		this.jpanelflowlayout = new JPanelFlowLayout();
+		this.jpanelgridlayout = new JPanelGridLayout();
+		
+		this.gridlayout = new GridLayout(-1, 2);
+		setLayout(this.gridlayout);
+		
+		add(this.jpanelsanslayout);
+		add(this.jpanelborderlayout);
+		add(this.jpanelflowlayout);
+		add(this.jpanelgridlayout);
+		}
+		
+	private void control()
+		{
+		// rien
+		}
+		
+	private void appearance()
+		{
+		setBackground(Color.GREEN);
+		this.gridlayout.setHgap(10);
+		this.gridlayout.setVgap(10);
+		}
+		
+	/*------------------------------------------------------------------*\
+	|*							Attributs Private						*|
+	\*------------------------------------------------------------------*/
+	
+	// Inputs
+	
+	// Tools
+	private JPanelSansLayout jpanelsanslayout;
+	private JPanelBorderLayout jpanelborderlayout;
+	private JPanelFlowLayout jpanelflowlayout;
+	private JPanelGridLayout jpanelgridlayout;
+	
+	private GridLayout gridlayout;
+	
+	}

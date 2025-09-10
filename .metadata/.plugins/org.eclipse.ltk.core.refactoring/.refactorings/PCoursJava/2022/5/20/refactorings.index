@@ -1,0 +1,10 @@
+1652863827995	Move compilation unit
+1652863836716	Move compilation unit
+1652863876382	Rename package 'ch.hearc.c_gui.tools.decorateur.image'
+1652864305065	Rename type 'UseRemoteDesktopClient'
+1652864319318	Rename type 'UseRemoteDesktopClientGUI'
+1652899169427	Rename type 'MouseAction'
+1652899183486	Rename type 'MouseMovement'
+1652899937650	Move 2 resources to 'message'
+1652901874032	Rename type 'DefaultSupplierSocket'
+1652904693973	Rename type 'UseClientRemoteDesktopClient'

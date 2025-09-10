@@ -1,0 +1,140 @@
+
+package ch.hearc.b_poo.j_thread.c_vecteurs;
+
+import org.junit.jupiter.api.Assertions;
+
+import ch.hearc.b_poo.j_thread.c_vecteurs.tools.Intervale;
+import ch.hearc.b_poo.j_thread.c_vecteurs.tools.TypeExecution;
+
+public class AddVector implements Runnable
+	{
+
+	/*------------------------------------------------------------------*\
+	|*							Constructeurs							*|
+	\*------------------------------------------------------------------*/
+
+	public AddVector(double[] tabV1, double[] tabV2, TypeExecution typeExecution)
+		{
+		Assertions.assertEquals(tabV1.length, tabV2.length);
+
+		// Input
+			{
+			this.tabV1 = tabV1;
+			this.tabV2 = tabV2;
+			this.typeExecution = typeExecution;
+			}
+
+		// Tools
+			{
+			this.n = this.tabV1.length;
+			int middle = n / 2;
+			this.intervale1 = new Intervale(0, middle); // [0,middle[
+			this.intervale2 = new Intervale(middle, n); // [middle,n[
+			}
+
+		// Output
+			{
+			this.tabW = new double[n];
+			}
+		}
+
+	/*------------------------------------------------------------------*\
+	|*							Methodes Public							*|
+	\*------------------------------------------------------------------*/
+
+	@Override
+	public void run()
+		{
+		switch(this.typeExecution)
+			{
+			case RUNNABLE:
+				{
+				runnable();
+				break;
+				}
+			case SEQUENTIEL:
+				{
+				sequentiel();
+				break;
+				}
+			case THREAD:
+				{
+				thread();
+				break;
+				}
+			default:
+				{
+				Assertions.fail("[AddVector]:run(): " + this.typeExecution + " pas codé");
+				break;
+				}
+			}
+		}
+
+	/*------------------------------*\
+	|*				Get				*|
+	\*------------------------------*/
+
+	public double[] getTabW()
+		{
+		return this.tabW;
+		}
+
+	/*------------------------------------------------------------------*\
+	|*							Methodes Private						*|
+	\*------------------------------------------------------------------*/
+
+	private void sequentiel()
+		{
+		addPortion(this.intervale1);
+		addPortion(this.intervale2);
+		}
+
+	private void runnable()
+		{
+		Runnable runnable1 = createRunnable(this.intervale1);
+		Runnable runnable2 = createRunnable(this.intervale2);
+		}
+
+	private Runnable createRunnable(Intervale intervale)
+		{
+		return new Runnable()
+			{
+			
+			@Override
+			public void run()
+				{
+				addPortion(intervale);
+				}
+			};
+		}
+
+	private void thread()
+		{
+
+		}
+
+	private void addPortion(Intervale intervale)
+		{
+		for(Integer i:intervale)
+			{
+			this.tabW[i] = this.tabV1[i] + this.tabV2[i];
+			}
+		}
+
+	/*------------------------------------------------------------------*\
+	|*							Attributs Private						*|
+	\*------------------------------------------------------------------*/
+
+	// Input
+	private double[] tabV1;
+	private double[] tabV2;
+	private TypeExecution typeExecution;
+
+	// Output
+	private double[] tabW;
+
+	// Tools
+	private int n;
+	private Intervale intervale1;
+	private Intervale intervale2;
+	}

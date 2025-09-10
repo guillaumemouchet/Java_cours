@@ -1,0 +1,6 @@
+1649331853499	Move compilation unit
+1649334543073	Delete element
+1649336239699	Rename package 'ch.hearc.c_gui.c_dessin.d_image'
+1649336270184	Rename package 'ch.hearc.c_gui.c_dessin.d_image.file'
+1649338060145	Extract local variable 'width'
+1649338068762	Extract local variable 'getheight'

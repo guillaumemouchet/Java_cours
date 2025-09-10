@@ -1,0 +1,92 @@
+
+package ch.hearc.a_kitbase.container.set;
+
+import java.util.Iterator;
+import java.util.Set;
+import java.util.TreeSet;
+
+/**
+ * Un set est comme une liste mais avec unicité --> cest une interface
+ */
+public class UseSet
+	{
+	/*------------------------------------------------------------------*\
+	|*							Methodes Public							*|
+	\*------------------------------------------------------------------*/
+
+	public static void main(String[] args)
+		{
+		main();
+		}
+
+	public static void main()
+		{
+		int n =3;
+		Set<Double> set = create();
+		fill(set,n);
+
+		printV1(set);
+		System.out.println();
+		//crtl + shift + 7 pour les commentaires
+		printV2(set);
+		System.out.println();
+		printV3(set);
+		System.out.println();
+		printV4(set);
+		System.out.println();
+		}
+
+	/*------------------------------------------------------------------*\
+	|*							Methodes Private						*|
+	\*------------------------------------------------------------------*/
+
+	private static Set<Double> create()
+		{
+		//return new HashSet<Double>(); //très performant mais les elements sont désorganisé
+		return new TreeSet<Double>(); //unicité et trié par ordre croissant, il est plus lent que le HashSet
+		}
+
+	private static void fill(Set<Double> set, int n)
+		{
+		//fori0 shortcut
+		for(int i = n-1; i >= 0; i--)
+			{
+			set.add(Math.PI*i);
+			}
+		}
+
+	private static void printV1(Set<Double> set)
+		{
+		//foreach shortcut
+		for(Double element:set)
+			{
+			System.out.println(element);
+			}
+		}
+
+	private static void printV2(Set<Double> set)
+		{
+		Iterator<Double> it = set.iterator();
+		//while --> shortcut with it
+		while(it.hasNext())
+			{
+			Double element = it.next();
+			System.out.println(element);
+			}
+		}
+
+	private static void printV3(Set<Double> set)
+		{
+		System.out.println(set.toString());
+		}
+
+	private static void printV4(Set<Double> set)
+		{
+		System.out.println(set);
+		}
+
+
+
+
+	}
+

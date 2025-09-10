@@ -1,0 +1,24 @@
+
+package ch.hearc.b_poo.e_interface.factory.d_implementation;
+
+import ch.hearc.b_poo.e_interface.factory.a_specification.Calculatrice_I;
+
+public class FactoryCalculatrice
+	{
+
+	/*------------------------------------------------------------------*\
+	|*							Methodes Public							*|
+	\*------------------------------------------------------------------*/
+
+	public static Calculatrice_I create()
+		{
+//		return null;
+//		return new CalculatriceV1();
+		return new CalculatriceV2();
+		}
+
+	/*------------------------------------------------------------------*\
+	|*							Methodes Private						*|
+	\*------------------------------------------------------------------*/
+
+	}

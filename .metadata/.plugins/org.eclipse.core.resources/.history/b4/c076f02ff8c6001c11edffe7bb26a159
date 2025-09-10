@@ -1,0 +1,39 @@
+
+package ch.hearc.d_flux.a_file.a_bin.b_object;
+
+import java.io.File;
+
+import org.junit.jupiter.api.Assertions;
+
+public class SerializerFile
+	{
+	/*------------------------------------------------------------------*\
+	|*							Methodes Public							*|
+	\*------------------------------------------------------------------*/
+
+	public static void save(Object object, String filename)
+		{
+
+		}
+
+	public static Object load(String filename)
+		{
+
+		}
+
+	public static Object clone(Object object)
+		{
+		String filename = "temp.bin";
+
+		save(object, filename);
+		Object objectClone = load(filename);
+		Assertions.assertTrue(new File(filename).delete());
+
+		return objectClone;
+		}
+
+	/*------------------------------------------------------------------*\
+	|*							Methodes Private						*|
+	\*------------------------------------------------------------------*/
+
+	}

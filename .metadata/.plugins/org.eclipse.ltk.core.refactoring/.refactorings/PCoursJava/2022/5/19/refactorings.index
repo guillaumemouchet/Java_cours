@@ -1,0 +1,9 @@
+1652261042836	Delete element
+1652261099179	Rename package 'ch.hearc.d_flux.b_object.materiel'
+1652261109989	Rename package 'ch.hearc.d_flux.b_object.file'
+1652261117871	Rename package 'ch.hearc.d_flux.b_object.memoire'
+1652261146934	Rename type 'SerializerCompresseur'
+1652358286680	Rename method 'startCommunicationAcync'
+1652362337451	Copy compilation unit
+1652362349018	Rename type 'EchoSerializeur'
+1652362386442	Move compilation unit

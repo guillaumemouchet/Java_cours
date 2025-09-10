@@ -1,0 +1,54 @@
+
+package ch.hearc.b_poo.g_aun_estun.aun;
+
+import java.awt.Color;
+
+public class Point
+	{
+
+	/*------------------------------------------------------------------*\
+	|*							Constructeurs							*|
+	\*------------------------------------------------------------------*/
+
+	public Point(int x, int y, Color color)
+		{
+		this.x = x;
+		this.y = y;
+		this.color = color;
+		}
+
+	/*------------------------------------------------------------------*\
+	|*							Methodes Public							*|
+	\*------------------------------------------------------------------*/
+
+	@Override
+	public String toString()
+		{
+		StringBuilder builder = new StringBuilder();
+		builder.append("Point [x=");
+		builder.append(this.x);
+		builder.append(", y=");
+		builder.append(this.y);
+		builder.append(", color=");
+		builder.append(this.color);
+		builder.append("]");
+		return builder.toString();
+		}
+
+	/*------------------------------*\
+	|*				Get				*|
+	\*------------------------------*/
+
+	/*------------------------------------------------------------------*\
+	|*							Methodes Private						*|
+	\*------------------------------------------------------------------*/
+
+	/*------------------------------------------------------------------*\
+	|*							Attributs Private						*|
+	\*------------------------------------------------------------------*/
+
+	//inputs
+	private int x;
+	private int y;
+	private Color color;
+	}

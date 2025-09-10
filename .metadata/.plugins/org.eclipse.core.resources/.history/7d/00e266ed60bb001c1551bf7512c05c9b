@@ -1,0 +1,213 @@
+
+package ch.hearc.c_gui.c_dessin.b_repere;
+
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.geom.AffineTransform;
+
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.JSpinner;
+import javax.swing.JTextField;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+
+public class JBidule extends JPanel
+	{
+
+	/*------------------------------------------------------------------*\
+	|*							Constructeurs							*|
+	\*------------------------------------------------------------------*/
+
+	public JBidule()
+		{
+		this.g2dBidule = new G2DBidule(100, 16, this);
+		geometry();
+		control();
+		appearance();
+		}
+
+	/*------------------------------------------------------------------*\
+	|*							Methodes Public							*|
+	\*------------------------------------------------------------------*/
+
+	@Override
+	protected void paintComponent(Graphics g)
+		{
+		super.paintComponent(g);
+		Graphics2D g2d = (Graphics2D)g;
+		AffineTransform backup = g2d.getTransform();
+		g2dBidule.draw(g2d, this.getSize().width, this.getSize().height);
+		g2d.setTransform(backup);
+		}
+
+	/*------------------------------------------------------------------*\
+	|*							Methodes Private						*|
+	\*------------------------------------------------------------------*/
+
+	private void geometry()
+		{
+		this.buttonStart = new JButton("Start");
+		this.buttonStop = new JButton("Stop");
+		this.sliderTime = new JSlider();
+		this.spinnerDeltaAnimation = new JSpinner();
+		this.textfieldNumberCharriot = new JTextField("Entrer un nombre");
+
+		add(this.buttonStart);
+		add(this.sliderTime);
+		add(this.buttonStop);
+		add(this.spinnerDeltaAnimation);
+		add(this.textfieldNumberCharriot);
+		}
+
+	private void control()
+		{
+		this.buttonStop.setEnabled(false);
+		this.buttonStart.setEnabled(true);
+		this.buttonStart.addActionListener(createActionListenerStart());
+		this.buttonStop.addActionListener(createActionListenerStop());
+
+		this.spinnerDeltaAnimation.addChangeListener(createChangeListenerSpinner());
+		this.sliderTime.addChangeListener(createChangeListenerSlider());
+		this.textfieldNumberCharriot.getDocument().addDocumentListener(createDocumentListener());
+		}
+
+	private DocumentListener createDocumentListener()
+		{
+		return new DocumentListener()
+			{
+
+			@Override
+			public void insertUpdate(DocumentEvent e)
+				{
+				// TODO Auto-generated method stub
+				try
+					{
+					g2dBidule.setNbCharriot(Integer.parseInt(textfieldNumberCharriot.getText()));
+					}
+				catch (Exception ee)
+					{
+					add(new JLabel("Error"));
+					revalidate();
+					}
+				}
+
+			@Override
+			public void removeUpdate(DocumentEvent e)
+				{
+				try
+					{
+					g2dBidule.setNbCharriot(Integer.parseInt(textfieldNumberCharriot.getText()));
+					}
+				catch (Exception ee)
+					{
+					add(new JLabel("Error"));
+					revalidate();
+					}
+				}
+
+			@Override
+			public void changedUpdate(DocumentEvent e)
+				{
+
+				try
+					{
+					g2dBidule.setNbCharriot(Integer.parseInt(textfieldNumberCharriot.getText()));
+					}
+				catch (Exception ee)
+					{
+					add(new JLabel("Error"));
+					revalidate();
+					}
+
+				}
+			};
+		}
+
+	private ActionListener createActionListenerStart()
+		{
+		return new ActionListener()
+			{
+
+			@Override
+			public void actionPerformed(ActionEvent e)
+				{
+				inverserEtatButton();
+				g2dBidule.start();
+				}
+			};
+		}
+
+	private ActionListener createActionListenerStop()
+		{
+		return new ActionListener()
+			{
+
+			@Override
+			public void actionPerformed(ActionEvent e)
+				{
+				inverserEtatButton();
+				g2dBidule.stop();
+				}
+			};
+		}
+
+	private void inverserEtatButton()
+		{
+		this.buttonStart.setEnabled(!this.buttonStart.isEnabled());
+		this.buttonStop.setEnabled(!this.buttonStop.isEnabled());
+		}
+
+	private ChangeListener createChangeListenerSlider()
+		{
+		return new ChangeListener()
+			{
+
+			@Override
+			public void stateChanged(ChangeEvent e)
+				{
+				g2dBidule.setTimeSleep(Math.max(0, sliderTime.getValue()));
+
+				}
+			};
+		}
+
+	private ChangeListener createChangeListenerSpinner()
+		{
+		return new ChangeListener()
+			{
+
+			@Override
+			public void stateChanged(ChangeEvent e)
+				{
+
+				g2dBidule.setDeltaAlphaAnimation(Math.max(0, Integer.parseInt(spinnerDeltaAnimation.getValue().toString())));
+				}
+			};
+		}
+
+	private void appearance()
+		{
+		// rien
+		}
+
+	/*------------------------------------------------------------------*\
+	|*							Attributs Private						*|
+	\*------------------------------------------------------------------*/
+
+	// Inputs
+	private JButton buttonStart;
+	private JButton buttonStop;
+	private JSlider sliderTime;
+	private JSpinner spinnerDeltaAnimation;
+	private JTextField textfieldNumberCharriot;
+	// Tools
+	private G2DBidule g2dBidule;
+
+	}

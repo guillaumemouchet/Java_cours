@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Move &apos;bilat_usb_jinput.jar&apos; to &apos;jinput&apos;" description="Move &apos;bilat_usb_jinput.jar&apos; to &apos;jinput&apos;" destination="Deploy/ext/jinput" element1="Deploy/ext/bilat_usb_jinput.jar" flags="7" id="org.eclipse.ltk.core.refactoring.move.resources" resources="1" stamp="1654681156203" updateReferences="true"/>
+</session>

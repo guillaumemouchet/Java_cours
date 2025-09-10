@@ -1,0 +1,34 @@
+
+package ch.hearc.b_poo.b_full;
+
+
+
+public class UseVoiture
+	{
+
+	/*------------------------------------------------------------------*\
+	|*							Methodes Public							*|
+	\*------------------------------------------------------------------*/
+
+	public static void main(String[] args)
+		{
+		main();
+		}
+
+	public static void main()
+		{
+		Roue roue0 = new Roue("bbs", 10);
+		Roue roue1 = new Roue("bbs", 10);
+		Roue roue2 = new Roue("bbs", 10);
+		Roue roue3 = new Roue("bbs", 10);
+		Voiture voiture = new Voiture("Peugot", roue0, roue1, roue2, roue3);
+
+		System.out.println(voiture);
+		}
+
+	/*------------------------------------------------------------------*\
+	|*							Methodes Private						*|
+	\*------------------------------------------------------------------*/
+
+	}
+

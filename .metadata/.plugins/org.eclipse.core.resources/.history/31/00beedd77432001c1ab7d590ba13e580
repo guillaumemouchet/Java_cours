@@ -1,0 +1,59 @@
+
+package ch.hearc.b_poo.b_full;
+
+import java.util.Arrays;
+
+public class Voiture
+	{
+
+	/*------------------------------------------------------------------*\
+	|*							Constructeurs							*|
+	\*------------------------------------------------------------------*/
+
+	public Voiture(String marque, Roue[] tabRoue)
+		{
+		this.marque = marque;
+		this.tabRoue = tabRoue;
+		}
+
+
+	public Voiture(String marque, Roue[] tabRoue)
+		{
+		this.marque = marque;
+		this.tabRoue = tabRoue;
+		}
+
+	/*------------------------------------------------------------------*\
+	|*							Methodes Public							*|
+	\*------------------------------------------------------------------*/
+
+	@Override
+	public String toString()
+		{
+		StringBuilder builder = new StringBuilder();
+		builder.append("Voiture [marque=");
+		builder.append(this.marque);
+		builder.append(", tabRoue=");
+		builder.append(Arrays.toString(this.tabRoue));
+		builder.append("]");
+		return builder.toString();
+		}
+
+	/*------------------------------*\
+	|*				Get				*|
+	\*------------------------------*/
+
+	/*------------------------------------------------------------------*\
+	|*							Methodes Private						*|
+	\*------------------------------------------------------------------*/
+
+	/*------------------------------------------------------------------*\
+	|*							Attributs Private						*|
+	\*------------------------------------------------------------------*/
+
+	//input
+	private String marque;
+	private Roue[] tabRoue;
+
+	}
+

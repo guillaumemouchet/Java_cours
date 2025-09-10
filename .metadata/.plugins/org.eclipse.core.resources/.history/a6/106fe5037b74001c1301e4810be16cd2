@@ -1,0 +1,28 @@
+
+package ch.hearc.b_poo.i_classe_interne_anonyme.b_derivation.b_classe_interne_anonyme;
+
+
+
+public class UseQuadratique
+	{
+
+	/*------------------------------------------------------------------*\
+	|*							Methodes Public							*|
+	\*------------------------------------------------------------------*/
+
+	public static void main(String[] args)
+		{
+		main();
+		}
+
+	public static void main()
+		{
+
+		}
+
+	/*------------------------------------------------------------------*\
+	|*							Methodes Private						*|
+	\*------------------------------------------------------------------*/
+
+	}
+

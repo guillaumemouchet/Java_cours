@@ -1,0 +1,39 @@
+
+package ch.hearc.e_socket.bin.tools.serialiseur;
+
+import java.io.IOException;
+import java.io.Serializable;
+
+import ch.hearc.d_flux.b_objets.c_memoire.Serializer;
+
+public class Serialiseur implements Serializeur_I
+	{
+
+	/*------------------------------------------------------------------*\
+	|*							Constructeurs							*|
+	\*------------------------------------------------------------------*/
+
+	/*------------------------------------------------------------------*\
+	|*							Methodes Public							*|
+	\*------------------------------------------------------------------*/
+
+	@Override
+	public byte[] serialize(Serializable serializable) throws IOException
+		{
+		return Serializer.serialize(serializable);
+		}
+
+	@Override
+	public Serializable unserialize(byte[] tabByte) throws ClassNotFoundException, IOException
+		{
+		return Serializer.unserialize(tabByte);
+		}
+
+	/*------------------------------------------------------------------*\
+	|*							Methodes Private						*|
+	\*------------------------------------------------------------------*/
+
+	/*------------------------------------------------------------------*\
+	|*							Attributs Private						*|
+	\*------------------------------------------------------------------*/
+	}

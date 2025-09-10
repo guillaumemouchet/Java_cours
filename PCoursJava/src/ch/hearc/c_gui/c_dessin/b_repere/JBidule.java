@@ -1,0 +1,122 @@
+
+package ch.hearc.c_gui.c_dessin.b_repere;
+
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.geom.AffineTransform;
+
+import javax.swing.JButton;
+import javax.swing.JPanel;
+
+import ch.hearc.c_gui.tools.decorateur.JMarge;
+
+public class JBidule extends JPanel
+	{
+
+	/*------------------------------------------------------------------*\
+	|*							Constructeurs							*|
+	\*------------------------------------------------------------------*/
+
+	public JBidule()
+		{
+		this.g2dBidule = new G2DBidule(100, 16, this);
+		this.jcontrol = new JControl(this.g2dBidule);
+		geometry();
+		control();
+		appearance();
+		}
+
+	/*------------------------------------------------------------------*\
+	|*							Methodes Public							*|
+	\*------------------------------------------------------------------*/
+
+	@Override
+	protected void paintComponent(Graphics g)
+		{
+		super.paintComponent(g);
+		Graphics2D g2d = (Graphics2D)g;
+
+		AffineTransform backup = g2d.getTransform();
+		g2dBidule.draw(g2d, this.getSize().width, this.getSize().height);
+		g2d.setTransform(backup);
+
+		}
+
+	/*------------------------------------------------------------------*\
+	|*							Methodes Private						*|
+	\*------------------------------------------------------------------*/
+
+	private void geometry()
+		{
+		this.buttonStart = new JButton("Start");
+		this.buttonStop = new JButton("Stop");
+
+
+		add(this.buttonStart);
+		add(this.buttonStop);
+		add(new JMarge(this.jcontrol,20,"Super controlleur"));
+		}
+
+	private void control()
+		{
+		this.buttonStop.setEnabled(false);
+		this.buttonStart.setEnabled(true);
+		this.buttonStart.addActionListener(createActionListenerStart());
+		this.buttonStop.addActionListener(createActionListenerStop());
+
+
+		}
+
+
+	private ActionListener createActionListenerStart()
+		{
+		return new ActionListener()
+			{
+
+			@Override
+			public void actionPerformed(ActionEvent e)
+				{
+				inverserEtatButton();
+				g2dBidule.start();
+				}
+			};
+		}
+
+	private ActionListener createActionListenerStop()
+		{
+		return new ActionListener()
+			{
+
+			@Override
+			public void actionPerformed(ActionEvent e)
+				{
+				inverserEtatButton();
+				g2dBidule.stop();
+				}
+			};
+		}
+
+	private void inverserEtatButton()
+		{
+		this.buttonStart.setEnabled(!this.buttonStart.isEnabled());
+		this.buttonStop.setEnabled(!this.buttonStop.isEnabled());
+		}
+
+
+	private void appearance()
+		{
+		// rien
+		}
+
+	/*------------------------------------------------------------------*\
+	|*							Attributs Private						*|
+	\*------------------------------------------------------------------*/
+
+	// Tools
+	private JButton buttonStart;
+	private JButton buttonStop;
+	private JControl jcontrol;
+	private G2DBidule g2dBidule;
+	}

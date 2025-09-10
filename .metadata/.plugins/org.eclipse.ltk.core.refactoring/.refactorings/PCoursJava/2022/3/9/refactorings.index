@@ -1,0 +1,16 @@
+1646311571681	Rename package 'ch.hearc.c_gui.c_devoirs'
+1646311593518	Move compilation units
+1646311616264	Rename type 'JFrameBiBouton'
+1646311623144	Rename type 'JPanelBiBouton'
+1646311629033	Rename type 'JPanelBiBoutonV2'
+1646311641537	Rename type 'UseJFrameBiBouton'
+1646311656828	Copy compilation unit
+1646311663963	Rename type 'UseJFrameBiBoutonV1'
+1646312815379	Delete elements
+1646312926893	Delete elements
+1646312982932	Rename type 'UseJFrameLayout'
+1646316710485	Rename type 'JPanelGridLayout'
+1646316722372	Rename type 'UseJFrameGridLayout'
+1646316732767	Rename package 'ch.hearc.c_gui.b_layout.b_gridlayout'
+1646317872600	Rename package 'ch.hearc.c_gui.b_layout'
+1646317918734	Rename package 'ch.hearc.c_gui.b_layoutatomiques'

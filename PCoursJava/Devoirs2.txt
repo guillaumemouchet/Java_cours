@@ -1,0 +1,122 @@
+------------------------------------------
+Cours 8
+------------------------------------------
+
+------------------------------------------
+Cours 7
+------------------------------------------
+
+AmÈliorer le code de M. Serra, quelques pistes faire un composant JControl qui contient le slider, le textfield,etc.
+Jouer avec la classe sizes pour le JTextField.
+Jouer avec setToolTip. Mettre des title border autour des slider etc.
+Jouer avec le decorateur, marge....
+
+CrÈer un classe Settings pour set des valeurs.
+
+------------------------------------------
+Cours 6
+------------------------------------------
+
+Ex1 
+
+Update le bidule de telle sorte que son diamËtre prenne les 3/4 de la place disponible.
+Attention il doit toujours Ítre visible.
+
+Indication:
+	employer le w et h fourni dans draw
+	
+Contraintes:
+	Doit marcher aussi en cas de redimensionement.
+
+Ex2
+
+Dans le JBidule mettre un JSlider qui va permettre de faire bouger le temps d'attente 
+dans la mÈthode run (Thread.sleep(XXX)).
+
+Ex3
+
+Faire un JSpinner(mettre min et max), va changer le deltaAlphaAnimation.
+
+Ex4
+
+Faire un JTextField, on pourra augmenter ou diminuer le nombre de chariot de mÍme taille.
+
+Indication:
+	Voir que l'utilisateur entre bien un chiffre. --> regarder une methode de la classe Integer.
+	Faire un try catch sur cette methode.
+	Dans le catch on affiche un message d'erreur different dans un JLabel.
+	add(label)
+	revalidate()
+	remove(label)
+	revalidate()
+
+------------------------------------------
+Cours 5
+------------------------------------------
+Ex1
+
+Objectif : dessiner un polygone ‡ N cÙtÈs, plus ou moins au centre de l'Ècran
+Contrainte : Vous devez employer une unique instance d'un objet line2D
+Indication : Bougez le repere
+
+G2DPolygone
+JPolygone
+UseJPolygone
+
+Ex2
+
+Faire un decorator JG2D(G2D_I) 
+Coder G2D_I (interface)
+
+public void draw(Graphics2D g2d, int w, int h)
+
+Objectif : new JFrameBaseLine(new JG2D(new G2DBidule()))
+------------------------------------------
+Cours 3
+------------------------------------------
+Exercice
+	crÈer la classe :
+		-JCentrerH(JComponent) --> est un JComponent
+		-JCentrerV(JComponent) --> est un JComponent
+		-JCentrer(JComponent) --> est un JComponent
+		
+		JCenter jcenter = new JCenter(JComponent)
+		add(jcenter);
+		
+		Indication: jouer avec les box
+		
+		mettre dans le package tools 
+
+------------------------------------------
+Cours 2
+------------------------------------------
+Exercice sp√©cial Mouchette
+
+	-JPanelCuriosite
+	-UseJFrameCuriosite
+	
+	Contraintes:
+	- Mettre un bouton dans un bouton 
+	- Partie √©venementielle sur les deux boutons
+	
+
+------------------------------------------
+Cours 1
+------------------------------------------
+Exercice 1
+
+	-JPanelBiBouton 
+	-JFrameBiBouton 
+	-UseJFrameBiBouton
+	
+	Fonctionnalit√©s : deux boutons, deux labels
+	- le label1 affiche le nombre de clicks sur le bouton1
+	- idem pour label2 et bouton2
+	
+	Contrainte : code joli !
+	
+	Si on ferme la fen√™tre, l'application se ferme
+
+------------------------------------------
+Start 
+------------------------------------------

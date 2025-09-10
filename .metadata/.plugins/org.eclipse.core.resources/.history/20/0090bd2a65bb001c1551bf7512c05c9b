@@ -1,0 +1,118 @@
+package ch.hearc.c_gui.c_dessin.b_repere;
+
+import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.JSpinner;
+import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentListener;
+
+import ch.hearc.c_gui.tools.decorateur.Sizes;
+
+public class JControl extends JPanel
+	{
+
+	/*------------------------------------------------------------------*\
+	|*							Constructeurs							*|
+	\*------------------------------------------------------------------*/
+
+	public JControl(G2DBidule g2dBidule)
+		{
+		this.g2dBidule = g2dBidule;
+		geometry();
+		control();
+		appearance();
+		}
+
+	/*------------------------------------------------------------------*\
+	|*							Methodes Public							*|
+	\*------------------------------------------------------------------*/
+
+	/*------------------------------*\
+	|*				Get				*|
+	\*------------------------------*/
+
+	/*------------------------------------------------------------------*\
+	|*							Methodes Private						*|
+	\*------------------------------------------------------------------*/
+
+	private void geometry()
+		{
+		this.sliderTime = new JSlider(1,100);
+		this.sliderTime.setValue(5);
+		// from 0 to 9, in 1.0 steps start value 5
+		SpinnerNumberModel model1 = new SpinnerNumberModel(500, 0, 10000, 1);
+		this.spinnerDeltaAnimation = new JSpinner(model1);
+		this.textfieldNumberCharriot = new JTextField("16");
+		Sizes.setHorizontal(this.textfieldNumberCharriot, 20);
+		Sizes.setVertical(this.textfieldNumberCharriot, 20);
+
+		add(this.sliderTime);
+		add(this.spinnerDeltaAnimation);
+		add(this.textfieldNumberCharriot);
+		}
+
+	private void control()
+		{
+		this.spinnerDeltaAnimation.addChangeListener(createChangeListenerSpinner());
+		this.sliderTime.addChangeListener(createChangeListenerSlider());
+		this.textfieldNumberCharriot.getDocument().addDocumentListener(createDocumentListener());
+		}
+
+	private void appearance()
+		{
+		// rien
+		}
+
+	private DocumentListener createDocumentListener()
+		{
+			return new DocumentListener() {
+
+			}
+		}
+
+
+	private ChangeListener createChangeListenerSlider()
+		{
+		return new ChangeListener()
+			{
+
+			@Override
+			public void stateChanged(ChangeEvent e)
+				{
+				g2dBidule.setTimeSleep(Math.max(0, sliderTime.getValue()));
+
+				}
+			};
+		}
+
+	private ChangeListener createChangeListenerSpinner()
+		{
+		return new ChangeListener()
+			{
+
+			@Override
+			public void stateChanged(ChangeEvent e)
+				{
+
+				g2dBidule.setDeltaAlphaAnimation( Math.PI / (  Math.max(0, Integer.parseInt(spinnerDeltaAnimation.getValue().toString()))));
+				}
+			};
+		}
+
+	/*------------------------------------------------------------------*\
+	|*							Attributs Private						*|
+	\*------------------------------------------------------------------*/
+
+	// Inputs
+
+	// Tools
+	private JSlider sliderTime;
+	private JSpinner spinnerDeltaAnimation;
+	private JTextField textfieldNumberCharriot;
+	private G2DBidule g2dBidule;
+
+
+	}

@@ -1,0 +1,60 @@
+------------------------------------------
+Cours 5
+------------------------------------------
+Objectif : dessiner un polygone ‡ N cÙtÈs, plus ou moins au centre de l'Ècran
+Contrainte : Vous devez employer une unique instance d'un objet line2D
+Indication : Bougez le repere
+
+G2DDessinPolygone
+JDessinPolygone
+UseJDessinPolygone
+
+------------------------------------------
+Cours 3
+------------------------------------------
+Exercice
+	crÈer la classe :
+		-JCentrerH(JComponent) --> est un JComponent
+		-JCentrerV(JComponent) --> est un JComponent
+		-JCentrer(JComponent) --> est un JComponent
+		
+		JCenter jcenter = new JCenter(JComponent)
+		add(jcenter);
+		
+		Indication: jouer avec les box
+		
+		mettre dans le package tools 
+
+------------------------------------------
+Cours 2
+------------------------------------------
+Exercice sp√©cial Mouchette
+
+	-JPanelCuriosite
+	-UseJFrameCuriosite
+	
+	Contraintes:
+	- Mettre un bouton dans un bouton 
+	- Partie √©venementielle sur les deux boutons
+	
+
+------------------------------------------
+Cours 1
+------------------------------------------
+Exercice 1
+
+	-JPanelBiBouton 
+	-JFrameBiBouton 
+	-UseJFrameBiBouton
+	
+	Fonctionnalit√©s : deux boutons, deux labels
+	- le label1 affiche le nombre de clicks sur le bouton1
+	- idem pour label2 et bouton2
+	
+	Contrainte : code joli !
+	
+	Si on ferme la fen√™tre, l'application se ferme
+
+------------------------------------------
+Start 
+------------------------------------------

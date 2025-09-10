@@ -1,0 +1,38 @@
+
+package ch.hearc.b_poo.j_thread.c_vecteurs;
+
+import java.util.Arrays;
+
+import ch.hearc.b_poo.j_thread.c_vecteurs.tools.TypeExecution;
+
+public class UseAddVector
+	{
+	/*------------------------------------------------------------------*\
+	|*							Methodes Public							*|
+	\*------------------------------------------------------------------*/
+
+	public static void main(String[] args)
+		{
+		main();
+		}
+
+	public static void main()
+		{
+		double[] tabV1 = {1,2,3,4,5,6,7,8,9};
+		double[] tabV2 = {10,20,30,40,50,60,70,80,90};
+
+		for(TypeExecution typeExecution: TypeExecution.values())
+			{
+			AddVector addVector = new AddVector(tabV1, tabV2, typeExecution);
+			addVector.run();
+			System.out.println(Arrays.toString(addVector.getTabW()));
+			}
+
+		}
+
+	/*------------------------------------------------------------------*\
+	|*							Methodes Private						*|
+	\*------------------------------------------------------------------*/
+
+	}
+

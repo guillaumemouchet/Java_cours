@@ -1,0 +1,173 @@
+
+package ch.hearc.socket.bin.tools.socket.bas_niveau.server;
+
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
+
+import ch.hearc.socket.bin.tools.Service_I;
+import ch.hearc.socket.bin.tools.socket.bas_niveau.server.communication.Communication;
+import ch.hearc.socket.bin.tools.socket.bas_niveau.server.communication.transfomerMessage.FactoryConsumerMessage_byte_I;
+import ch.hearc.socket.bin.tools.socket.bas_niveau.server.communication.transfomerMessage.TransformerMessage_byte_I;
+
+public class Server_byte implements Service_I
+	{
+
+	/*------------------------------------------------------------------*\
+	|*							Constructeurs							*|
+	\*------------------------------------------------------------------*/
+
+	public Server_byte(FactoryConsumerMessage_byte_I factoryTransformerMessageByte, String title, int port)
+		{
+		// Inputs
+			{
+			this.port = port;
+			this.factoryTransformerMessageByte = factoryTransformerMessageByte;
+			this.title = title;
+			}
+
+		// Tools
+			{
+			this.listThread = new ArrayList<Thread>();
+			this.listCommunication = new ArrayList<Communication>();
+			}
+		}
+
+	public Server_byte(FactoryConsumerMessage_byte_I factoryTransformerMessageByte, String title)
+		{
+		this(factoryTransformerMessageByte, title, DEFAULT_PORT);
+		}
+
+	/*------------------------------------------------------------------*\
+	|*							Methodes Public							*|
+	\*------------------------------------------------------------------*/
+
+	@Override
+	public synchronized boolean start()
+		{
+		this.threadServer = new Thread(createRunnable());
+		this.threadServer.setName("serveur_socket_" + title);
+		this.threadServer.start();
+
+		System.out.println(prefixeMessage() +" : started");
+
+		return true;
+		}
+
+	@Override
+	public synchronized boolean stop()
+		{
+		try
+			{
+			boolean isSuccess = true;
+			for(Communication communication:listCommunication)
+				{
+				isSuccess &= communication.stop();
+				}
+
+			for(Thread thread:listThread)
+				{
+				thread.stop();
+				}
+
+			this.serverSocket.close();
+			threadServer.stop();
+			System.out.println(prefixeMessage()+" : stopped");
+
+			return isSuccess;
+			}
+		catch (IOException e)
+			{
+			System.err.println(prefixeMessage()+" : stopped : failed : " + e);
+			e.printStackTrace();
+			return false;
+			}
+		}
+
+	/*------------------------------------------------------------------*\
+	|*							Methodes Private						*|
+	\*------------------------------------------------------------------*/
+
+	private Runnable createRunnable()
+		{
+		return new Runnable()
+			{
+
+			@Override
+			public void run()
+				{
+				runServeur();
+				}
+			};
+		}
+
+	private void runServeur()
+		{
+		try
+			{
+			// v1
+			this.serverSocket = new ServerSocket(this.port);
+
+			//v2
+			//			this.serverSocket = new ServerSocket();
+			//			this.serverSocket.setReuseAddress(true);
+			//			this.serverSocket.bind(new InetSocketAddress(this.port));
+
+			while(true)
+				{
+				this.clientSocket = serverSocket.accept(); // accept est synchrone
+				System.out.println(prefixeMessage() + " : accept new communication");
+
+				TransformerMessage_byte_I transformerMessageByte = this.factoryTransformerMessageByte.create(); // chaque communication doit avoir sa propre instance de consumerMessage
+				String titleCommunication = this.title + " (" + this.port + ")";
+				Communication communicationMOO = new Communication(this.clientSocket, transformerMessageByte, titleCommunication);
+				communicationMOO.start();
+
+				Thread thread = new Thread(communicationMOO);
+				thread.setName("socket_" + title);
+
+				listThread.add(thread);
+				listCommunication.add(communicationMOO);
+
+				thread.start();
+				}
+			}
+		catch (IOException e)
+			{
+			System.err.println(prefixeMessage() + " :  create socket : fail : " + e);
+			e.printStackTrace();
+			}
+		}
+
+	private String prefixeMessage()
+		{
+		return "[Server] : " + title + " (" + port + ")";
+		}
+
+	/*------------------------------------------------------------------*\
+	|*							Attributs Private						*|
+	\*------------------------------------------------------------------*/
+
+	//Inputs
+	private int port;
+	private FactoryConsumerMessage_byte_I factoryTransformerMessageByte;
+	private String title;
+
+	//Tools
+	private ServerSocket serverSocket;
+	private Socket clientSocket;
+
+	private List<Thread> listThread;
+	private List<Communication> listCommunication;
+
+	private Thread threadServer;
+
+	/*------------------------------*\
+	|*			  Static			*|
+	\*------------------------------*/
+
+	public static final int DEFAULT_PORT = 1099; // RMI default
+
+	}

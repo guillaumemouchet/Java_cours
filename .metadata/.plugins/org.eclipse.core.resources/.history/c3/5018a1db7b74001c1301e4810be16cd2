@@ -1,0 +1,43 @@
+
+package ch.hearc.b_poo.i_classe_interne_anonyme.b_derivation.b_classe_interne_anonyme;
+
+import ch.hearc.b_poo.c_runnable.quadratique.Quadratique;
+
+public class UseQuadratique
+	{
+
+	/*------------------------------------------------------------------*\
+	|*							Methodes Public							*|
+	\*------------------------------------------------------------------*/
+
+	public static void main(String[] args)
+		{
+		main();
+		}
+
+	public static void main()
+		{
+		Quadratique quadratique = createQuadratique(-2, 10, 1);
+		quadratique.run();
+		
+		System.out.println(quadratique);
+		}
+
+	/*------------------------------------------------------------------*\
+	|*							Methodes Private						*|
+	\*------------------------------------------------------------------*/
+
+	private static Quadratique createQuadratique(double a, double b, double c)
+		{
+			return new Quadratique(a, b, c)
+						{
+							@Override
+							public void run()
+								{
+								super.run();
+								System.out.println("Vive la dérivation avec classe anonyme");
+								}
+						};
+		}
+	}
+

@@ -1,0 +1,11 @@
+1651148358158	Rename local variable 'bos'
+1651148503366	Rename local variable 'gos'
+1651148713398	Copy compilation unit
+1651149773883	Copy compilation unit
+1651151485516	Move compilation units
+1651152510377	Rename type 'Serializer'
+1651153066715	Rename local variable 'fos'
+1651153077235	Rename local variable 'bos'
+1651153083747	Rename local variable 'oos'
+1651153426595	Extract method 'createEquipe'
+1651153754448	Rename local variable 'object'

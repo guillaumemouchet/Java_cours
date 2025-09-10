@@ -1,0 +1,75 @@
+
+package ch.hearc.c_gui.c_dessin.d_image.c_composition;
+
+import java.awt.Graphics2D;
+
+import javax.swing.JComponent;
+
+import ch.hearc.c_gui.c_dessin.b_repere.G2DBidule;
+import ch.hearc.c_gui.c_dessin.c_exercice.G2DPolygoneV2;
+import ch.hearc.c_gui.c_dessin.d_image.a_file.a_hello.G2DImage;
+import ch.hearc.c_gui.c_dessin.d_image.b_custom.G2DCustom;
+import ch.hearc.c_gui.tools.decorateur.G2D_I;
+
+public class G2DComposition implements G2D_I
+	{
+	
+	/*------------------------------------------------------------------*\
+	|*							Constructeurs							*|
+	\*------------------------------------------------------------------*/
+	
+	public G2DComposition(JComponent jcomponent)
+		{
+		this.g2dBidule = new G2DBidule(100, 8, jcomponent);
+		this.g2dCustom = new G2DCustom(jcomponent);
+		this.g2dImage = new G2DImage(jcomponent);
+		this.g2dPolygoneV2 = new G2DPolygoneV2(50, 10);
+		}
+		
+	/*------------------------------------------------------------------*\
+	|*							Methodes Public							*|
+	\*------------------------------------------------------------------*/
+	
+	public void start()
+		{
+		this.g2dBidule.start();
+		this.g2dCustom.start();
+		}
+		
+	public void stop()
+		{
+		this.g2dBidule.stop();
+		this.g2dCustom.stop();
+		}
+		
+	@Override
+	public void draw(Graphics2D g2d, int w, int h)
+		{
+		this.g2dCustom.draw(g2d, w, h);
+		this.g2dImage.draw(g2d, w, h);
+		this.g2dBidule.draw(g2d, w, h);
+		this.g2dPolygoneV2.draw(g2d, w, h);
+		}
+		
+	/*------------------------------*\
+	|*				Get				*|
+	\*------------------------------*/
+	
+	/*------------------------------------------------------------------*\
+	|*							Methodes Private						*|
+	\*------------------------------------------------------------------*/
+	
+	/*------------------------------------------------------------------*\
+	|*							Attributs Private						*|
+	\*------------------------------------------------------------------*/
+	
+	//input
+	private JComponent jcomponent;
+	
+	//tools
+	private G2DPolygoneV2 g2dPolygoneV2;
+	private G2DBidule g2dBidule;
+	private G2DCustom g2dCustom;
+	private G2DImage g2dImage;
+	
+	}
